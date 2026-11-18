@@ -25,22 +25,26 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	height: 76px;
+	height: var(--header-h);
 
 	&__links {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		display: flex;
-		gap: 23px;
+		gap: 4px;
 		color: var(--nav-link);
 		font-size: 0.9rem;
 		font-weight: 750;
 		white-space: nowrap;
 		transform: translate(-50%, -50%);
 
-		a:hover {
-			color: var(--nav-link-hover);
+		// Hover adds only the glass background and border; the text colour stays the same.
+		a {
+			@include glass-hover;
+
+			padding: 6px 13px;
+			border-radius: 999px;
 		}
 
 		@media (max-width: $breakpoint-tablet) {
@@ -113,36 +117,36 @@
 		@include glass;
 
 		position: absolute;
-		top: 36px;
+		top: 38px;
 		right: 0;
 		display: grid;
 		gap: 3px;
 		min-width: 132px;
 		padding: 4px;
 		overflow: hidden;
-		border-radius: 10px;
+		border-radius: 20px; // concentric with the pill rows: 32px / 2 + 4px padding
 
 		&[hidden] {
 			display: none;
 		}
 
 		button {
+			@include glass-hover;
+
 			display: flex;
 			align-items: center;
 			gap: 8px;
-			min-height: 30px;
-			padding: 6px 8px;
-			border: 0;
-			border-radius: 7px;
-			background: transparent;
+			height: 32px;
+			padding: 0 12px 0 9px;
+			border-radius: 999px; // same pill as the nav hover
+			background-color: transparent;
 			color: var(--text);
 			font: 600 0.82rem system-ui, sans-serif;
 			text-align: left;
 			cursor: pointer;
 
-			&:hover,
 			&.is-active {
-				background: var(--menu-hover-bg);
+				@include glass-hover-state;
 			}
 		}
 	}

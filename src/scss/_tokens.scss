@@ -3,8 +3,17 @@ $breakpoint-tablet: 850px;
 $breakpoint-orb: 700px;
 $breakpoint-phone: 650px;
 
+// Measured from the source images (alpha edge, median over 360 directions, so the sun's flares do not count):
+$sun-disc: 0.697; // sun body diameter / image width
+$moon-disc: 0.793; // moon disc diameter / image width
+$orb-glow-inset: 50px; // the glow circle's edge sits this far inside the disc, so only the soft blur shows
+$sun-disc-offset-x: -0.0129; // the sun body sits 1.29% (of the image width) left of the image centre
+
 :root {
 	--max: 1160px;
+	--header-h: 76px;
+	--orb-size: min(500px, 40vw); // the fixed sun/moon; the hero glow spot is its disc
+	--footer-h: 60px; // desktop; the hero fills the space between header and footer
 	--font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 	--font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", monospace;
 	--font-serif: "Instrument Serif", "Iowan Old Style", "Georgia", serif;
@@ -20,7 +29,6 @@ $breakpoint-phone: 650px;
 	--copy: #d2d8e3;
 	--tag-text: #cbd2df;
 	--nav-link: var(--muted);
-	--nav-link-hover: var(--gold);
 	--page-bg:
 		radial-gradient(circle at 78% 24%, rgb(255 139 43 / 20%), transparent 25%),
 		radial-gradient(circle at 12% 72%, rgb(116 61 255 / 17%), transparent 30%),
@@ -45,7 +53,7 @@ $breakpoint-phone: 650px;
 	--control-hover-bg: rgb(255 255 255 / 14%);
 	--control-hover-border: rgb(255 226 91 / 52%);
 	--control-hover-shadow: inset 0 1px 0 rgb(255 255 255 / 28%), 0 0 24px rgb(255 202 70 / 14%);
-	--menu-hover-bg: rgb(255 255 255 / 10%);
+	--glass-bg-hover: rgb(255 255 255 / 8%); // hover state of nav items, language menu items, ghost button
 
 	// Buttons.
 	--btn-primary-bg: linear-gradient(135deg, #fffbe6 0%, #ffe263 45%, #ffb347 100%);
@@ -60,7 +68,7 @@ $breakpoint-phone: 650px;
 	--logo-scale: 0.94;
 
 	// The moon glows pure white.
-	--orb-glow: drop-shadow(0 0 14px rgb(255 255 255)) drop-shadow(0 0 48px rgb(255 255 255 / 55%)) drop-shadow(0 0 110px rgb(255 255 255 / 25%));
+	--orb-glow: 0 0 30px 46px rgb(255 255 255), 0 0 80px 62px rgb(255 255 255 / 55%), 0 0 170px 92px rgb(255 255 255 / 25%);
 }
 
 :root.light {
@@ -75,7 +83,6 @@ $breakpoint-phone: 650px;
 	--copy: var(--text);
 	--tag-text: #173a52;
 	--nav-link: #244e69;
-	--nav-link-hover: #a94f08;
 	--page-bg: linear-gradient(135deg, #dff6ff 0%, #9ed4f5 48%, #eefbff 100%);
 	--glass-bg: rgb(255 255 255 / 6%);
 	--glass-border: rgb(255 255 255 / 45%);
@@ -89,7 +96,7 @@ $breakpoint-phone: 650px;
 	--control-hover-bg: rgb(255 255 255 / 42%);
 	--control-hover-border: rgb(207 112 14 / 52%);
 	--control-hover-shadow: inset 0 1px 0 rgb(255 255 255 / 90%), 0 0 24px rgb(255 166 42 / 18%);
-	--menu-hover-bg: rgb(255 255 255 / 35%);
+	--glass-bg-hover: rgb(255 255 255 / 14%);
 	--btn-primary-bg: linear-gradient(135deg, #fff6d8 0%, #ffc95c 45%, #e8821f 100%);
 	--btn-primary-text: #2f1602;
 	--btn-primary-shadow: inset 0 1px 0 rgb(255 255 255 / 80%), 0 10px 30px -12px rgb(216 109 11 / 55%);
@@ -100,5 +107,5 @@ $breakpoint-phone: 650px;
 	--logo-scale: 1;
 
 	// The sun glows the palest yellow.
-	--orb-glow: drop-shadow(0 0 16px rgb(255 254 240)) drop-shadow(0 0 56px rgb(255 254 240 / 70%)) drop-shadow(0 0 120px rgb(255 252 220 / 35%));
+	--orb-glow: 0 0 32px 46px rgb(255 254 240), 0 0 88px 64px rgb(255 254 240 / 70%), 0 0 180px 98px rgb(255 252 220 / 35%);
 }

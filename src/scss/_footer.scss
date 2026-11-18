@@ -18,6 +18,14 @@
 		gap: 20px;
 	}
 
+	// Fixed height on desktop so the hero can fill exactly the space between header and footer.
+	@media (min-width: $breakpoint-tablet + 1) {
+		display: flex;
+		align-items: center;
+		height: var(--footer-h);
+		padding-block: 0;
+	}
+
 	@media (max-width: $breakpoint-tablet) {
 		.wrap {
 			display: block;

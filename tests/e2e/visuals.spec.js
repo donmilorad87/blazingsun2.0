@@ -4,6 +4,9 @@ test.beforeEach( async ( { page } ) => {
 	await page.route( '**/api/visits', ( route ) => route.fulfill( { json: { total: 1 } } ) );
 } );
 
+// Waits until the visible sun/moon has finished its drop-in animation (it moves while animating).
+const orbSettled = ( page ) => page.waitForFunction( () => document.documentElement.dataset.orb === 'idle' );
+
 const centreOf = ( locator ) => locator.evaluate( ( el ) => {
 	const rect = el.getBoundingClientRect();
 	return { x: rect.left + ( rect.width / 2 ), y: rect.top + ( rect.height / 2 ) };
@@ -12,7 +15,8 @@ const centreOf = ( locator ) => locator.evaluate( ( el ) => {
 test( 'desktop: the sun/moon is centred on the hero glow spot and stays fixed while scrolling', async ( { page, isMobile } ) => {
 	test.skip( isMobile, 'desktop layout only' );
 	await page.goto( '/' );
-	const orb = page.locator( '.theme-orb' );
+	await orbSettled( page );
+	const orb = page.locator( '.theme-orb:visible' );
 	await expect( orb ).toHaveCSS( 'position', 'fixed' );
 
 	const spot = await centreOf( page.locator( '.hero__glow' ) );
@@ -29,11 +33,12 @@ test( 'desktop: the sun/moon is centred on the hero glow spot and stays fixed wh
 test( 'desktop: the orb follows the glow spot when the window is resized', async ( { page, isMobile } ) => {
 	test.skip( isMobile, 'desktop layout only' );
 	await page.goto( '/' );
+	await orbSettled( page );
 	await page.setViewportSize( { width: 1100, height: 800 } );
 
 	await expect.poll( async () => {
 		const spot = await centreOf( page.locator( '.hero__glow' ) );
-		const orb = await centreOf( page.locator( '.theme-orb' ) );
+		const orb = await centreOf( page.locator( '.theme-orb:visible' ) );
 		return Math.round( Math.abs( orb.x - spot.x ) + Math.abs( orb.y - spot.y ) );
 	} ).toBeLessThanOrEqual( 3 );
 } );
@@ -50,11 +55,12 @@ test( 'the hero glow spot has no background blob or blur any more', async ( { pa
 
 test( 'moon glows pure white, sun glows the palest yellow', async ( { page } ) => {
 	await page.goto( '/' );
-	const orb = page.locator( '.theme-orb' );
-	await expect( orb ).toHaveCSS( 'filter', /drop-shadow\(rgb\(255, 255, 255\)/ );
+	// box-shadow halo on a disc-sized circle behind the image (drawn once), not a per-frame drop-shadow filter.
+	const glow = () => page.locator( '.theme-orb:visible' ).evaluate( ( orb ) => getComputedStyle( orb, '::before' ).boxShadow );
+	await expect.poll( glow ).toMatch( /^rgb\(255, 255, 255\)/ );
 
 	await page.getByRole( 'button', { name: 'Toggle between Blazing Sun and White Moon' } ).click();
-	await expect( orb ).toHaveCSS( 'filter', /drop-shadow\(rgb\(255, 254, 240\)/ );
+	await expect.poll( glow ).toMatch( /^rgb\(255, 254, 240\)/ );
 } );
 
 test( 'cards, header, footer and language menu share the same light glass', async ( { page } ) => {
@@ -80,7 +86,7 @@ test( 'cards, header, footer and language menu share the same light glass', asyn
 test( '<picture> wrappers do not shift icons (logo flush left, toggle icon centred)', async ( { page } ) => {
 	await page.goto( '/' );
 	const layout = await page.evaluate( () => {
-		const box = ( selector ) => document.querySelector( selector ).getBoundingClientRect();
+		const box = ( selector ) => [ ...document.querySelectorAll( selector ) ].find( ( el ) => el.checkVisibility() ).getBoundingClientRect();
 		const brand = box( '.brand' );
 		const logo = box( '.brand__logo' );
 		const toggle = box( '.theme-toggle' );
@@ -152,8 +158,9 @@ test( 'the about text sits in a glass card like the quote, with matching height'
 test( 'light theme: clouds drift in front of the sun, but behind the page content', async ( { page } ) => {
 	await page.goto( '/' );
 	await page.getByRole( 'button', { name: 'Toggle between Blazing Sun and White Moon' } ).click();
+	await expect( page.locator( 'html' ) ).toHaveClass( /\blight\b/ );
 	const z = await page.evaluate( () => {
-		const zIndex = ( selector ) => Number( getComputedStyle( document.querySelector( selector ) ).zIndex );
+		const zIndex = ( selector ) => Number( getComputedStyle( [ ...document.querySelectorAll( selector ) ].find( ( el ) => el.checkVisibility() ) ).zIndex );
 		return { sun: zIndex( '.theme-orb' ), clouds: zIndex( '.sky--clouds' ), content: zIndex( 'main' ), header: zIndex( '.site-header' ) };
 	} );
 	expect( z.clouds ).toBeGreaterThan( z.sun );

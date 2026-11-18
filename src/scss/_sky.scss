@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "tokens" as *;
 
 // Fixed decorative background: star / cloud canvases and the moon / sun orb.
@@ -34,26 +35,79 @@
 	top: 50%;
 	right: clamp(24px, 8vw, 140px);
 	z-index: 0;
-	width: min(500px, 40vw);
-	height: auto;
-	object-fit: contain;
+	display: grid;
+	place-items: center;
+	width: var(--orb-size);
+	aspect-ratio: 1;
 	opacity: 0.72;
-	filter: var(--orb-glow);
 	transform: translateY(-50%);
 	pointer-events: none;
 
-	// Desktop: centred on the hero's glow spot (OrbPlacer.js), still fixed while scrolling.
-	&.is-placed {
+	// The glow comes from behind the disc: a disc-sized circle under the image casts it. A static box-shadow
+	// is drawn once (a drop-shadow filter would be re-computed on every frame of the animated sun).
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		width: calc(#{$sun-disc * 100%} - #{2 * $orb-glow-inset});
+		height: calc(#{$sun-disc * 100%} - #{2 * $orb-glow-inset});
+		margin: auto;
+		border-radius: 50%;
+		box-shadow: var(--orb-glow);
+	}
+
+	&__image {
+		grid-area: 1 / 1;
+		width: 100%;
+		height: auto;
+	}
+
+	// The sun's body is slightly left of its image centre: keep the glow exactly behind it.
+	&[data-theme-only="light"]::before {
+		translate: calc(var(--orb-size) * #{$sun-disc-offset-x}) 0;
+	}
+
+	// Same diameter as the sun's body (not its flares): the moon disc fills more of its image, so it is shown smaller.
+	&[data-theme-only="dark"] &__image {
+		width: math.div($sun-disc, $moon-disc) * 100%;
+	}
+
+	// Desktop: centred on the hero's glow spot (ThemeOrb.js), still fixed while scrolling.
+	.orb-placed & {
 		top: var(--orb-y);
 		right: auto;
 		left: var(--orb-x);
 		transform: translate(-50%, -50%);
 	}
 
+	// Hidden until placed and loaded, so it never appears in the wrong spot or as the wrong theme.
+	.orb-pending & {
+		opacity: 0;
+	}
+
+	// Drops in from the top of the page and decelerates straight into its final place (no overshoot).
+	.orb-arrived & {
+		animation: orb-arrive 1.4s var(--ease-out) backwards;
+	}
+
+	// Theme switch: rises out of the top before the theme changes.
+	.orb-leaving & {
+		animation: orb-leave 0.6s cubic-bezier(0.55, 0, 0.75, 0.2) forwards;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.orb-arrived &,
+		.orb-leaving & {
+			animation: none;
+		}
+	}
+
 	@media (max-width: $breakpoint-orb) {
+		--orb-size: min(330px, 72vw);
+
 		top: 44%;
 		right: 50%;
-		width: min(330px, 72vw);
 		opacity: 0.62;
 		transform: translate(50%, -50%);
 	}
@@ -63,4 +117,24 @@ main,
 .site-footer {
 	position: relative;
 	z-index: 2;
+}
+
+// Only `translate` (a separate property that adds to the centring transform): `scale` would scale around the
+// un-centred box and make the orb drift sideways while landing.
+@keyframes orb-arrive {
+	from {
+		opacity: 0;
+		translate: 0 -75vh;
+	}
+
+	to {
+		translate: 0 0;
+	}
+}
+
+@keyframes orb-leave {
+	to {
+		opacity: 0;
+		translate: 0 -75vh;
+	}
 }

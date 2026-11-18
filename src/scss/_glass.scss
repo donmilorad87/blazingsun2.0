@@ -16,6 +16,25 @@
 	backdrop-filter: var(--glass-blur);
 }
 
+// Hover glass for items that are plain until hovered (nav links, language menu items, ghost button).
+// The 1px border is always there (transparent), so revealing it never moves anything; its colour never changes.
+@mixin glass-hover-state {
+	background-color: var(--glass-bg-hover);
+	border-color: var(--glass-border);
+	box-shadow: var(--glass-shadow);
+	backdrop-filter: var(--glass-blur);
+}
+
+@mixin glass-hover {
+	border: 1px solid transparent;
+	transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+
+	&:hover,
+	&:focus-visible {
+		@include glass-hover-state;
+	}
+}
+
 // Star-chart registration ticks in the four corners (drawn with background layers, not extra elements).
 // $extra: one more full-size background layer drawn under the ticks (e.g. the contact box's orbit rings).
 @mixin corner-ticks($size: 14px, $inset: 10px, $extra: null) {

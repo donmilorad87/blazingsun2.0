@@ -1,0 +1,94 @@
+@use "tokens" as *;
+@use "glass" as *;
+
+// Round glass button bottom-right, above the sticky footer. Hidden until BackToTop.js adds .is-visible.
+.back-to-top {
+	@include glass;
+
+	position: fixed;
+	right: clamp(16px, 3vw, 32px);
+	bottom: calc(var(--footer-h) + 20px);
+	z-index: 95;
+	display: grid;
+	place-items: center;
+	width: 52px;
+	height: 52px;
+	padding: 0;
+	border-radius: 50%;
+	color: var(--text);
+	cursor: pointer;
+	opacity: 0;
+	translate: 0 16px;
+	visibility: hidden;
+	transition:
+		opacity 0.4s ease,
+		translate 0.5s var(--ease-out),
+		background-color 0.3s ease,
+		visibility 0s linear 0.5s;
+
+	&.is-visible {
+		opacity: 1;
+		translate: 0 0;
+		visibility: visible;
+		transition-delay: 0s;
+	}
+
+	&:hover {
+		background-color: var(--glass-bg-hover);
+	}
+
+	&__ring,
+	&__arrow {
+		grid-area: 1 / 1;
+		pointer-events: none;
+	}
+
+	// Progress ring: starts at 12 o'clock and fills clockwise with --progress (0…1).
+	&__ring {
+		width: 100%;
+		height: 100%;
+		rotate: -90deg;
+		fill: none;
+		stroke-width: 1.5;
+	}
+
+	&__track {
+		stroke: var(--glass-border);
+	}
+
+	&__progress {
+		stroke: var(--gold);
+		stroke-dasharray: 100;
+		stroke-dashoffset: calc(100 - (var(--progress, 0) * 100));
+		stroke-linecap: round;
+		filter: drop-shadow(0 0 3px var(--gold));
+	}
+
+	&__arrow {
+		width: 20px;
+		height: 20px;
+		fill: none;
+		stroke: currentcolor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		transition: translate 0.3s var(--ease-out);
+	}
+
+	&:hover &__arrow {
+		translate: 0 -2px;
+	}
+
+	// The footer stacks onto two lines on tablets and phones, so sit higher there.
+	@media (max-width: $breakpoint-tablet) {
+		bottom: 112px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+
+		&__arrow {
+			transition: none;
+		}
+	}
+}

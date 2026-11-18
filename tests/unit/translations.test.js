@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { TRANSLATIONS, DEFAULT_LANGUAGE } from '../../src/js/translations.js';
 
 const html = readFileSync( new URL( '../../index.html', import.meta.url ), 'utf8' );
-const keysInHtml = [ ...html.matchAll( /data-i18n(?:-html)?="([^"]+)"/g ) ].map( ( match ) => match[ 1 ] );
+const keysInHtml = [ ...html.matchAll( /data-i18n(?:-html|-aria-label)?="([^"]+)"/g ) ].map( ( match ) => match[ 1 ] );
 const languages = Object.keys( TRANSLATIONS );
 
 test( 'index.html declares translatable elements', () => {
@@ -32,6 +32,10 @@ test( 'no language has keys that index.html does not use', () => {
 
 test( 'English translations match the static HTML text (SEO copy stays in sync)', () => {
 	const textOf = ( key ) => {
+		const label = html.match( new RegExp( `aria-label="([^"]*)"[^>]*data-i18n-aria-label="${ key.replace( /\./g, '\\.' ) }"` ) );
+		if ( label ) {
+			return label[ 1 ];
+		}
 		const match = html.match( new RegExp( `data-i18n(?:-html)?="${ key.replace( /\./g, '\\.' ) }"[^>]*>([\\s\\S]*?)</(?:span|a|div|h1|h2|h3|p|button)>` ) );
 		return match ? match[ 1 ].replace( /&amp;/g, '&' ).trim() : null;
 	};

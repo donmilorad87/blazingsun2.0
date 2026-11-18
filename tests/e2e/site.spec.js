@@ -19,7 +19,7 @@ test.afterEach( async ( { page } ) => {
 
 test( 'renders the hero and every section', async ( { page } ) => {
 	await expect( page ).toHaveTitle( 'Milorad Đuković | Blazing Sun' );
-	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Building bold digital systems.' );
+	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Building digital systems' );
 	for ( const id of [ 'about', 'stack', 'experience', 'projects', 'cv-highlights', 'contact' ] ) {
 		await expect( page.locator( `#${ id }` ) ).toBeAttached();
 	}
@@ -28,7 +28,8 @@ test( 'renders the hero and every section', async ( { page } ) => {
 test( 'every image loads', async ( { page } ) => {
 	await page.waitForLoadState( 'load' );
 	const broken = await page.locator( 'img' ).evaluateAll(
-		( images ) => images.filter( ( img ) => ! img.complete || img.naturalWidth === 0 ).map( ( img ) => img.src ),
+		// Only displayed images: the other theme's pictures are lazy and intentionally not loaded.
+		( images ) => images.filter( ( img ) => img.checkVisibility() && ( ! img.complete || img.naturalWidth === 0 ) ).map( ( img ) => img.src ),
 	);
 	expect( broken ).toEqual( [] );
 } );
@@ -43,13 +44,13 @@ test( 'in-page nav links point at existing sections', async ( { page } ) => {
 
 test( 'theme toggle switches to Blazing Sun and remembers it', async ( { page } ) => {
 	const toggle = page.getByRole( 'button', { name: 'Toggle between Blazing Sun and White Moon' } );
-	await expect( page.locator( '.brand__name' ) ).toHaveText( 'White Moon' );
+	await expect( page.locator( '.brand__name:visible' ) ).toHaveText( 'White Moon' );
 	await expect( toggle ).toHaveAttribute( 'aria-pressed', 'false' );
 
 	await toggle.click();
 	await expect( page.locator( 'html' ) ).toHaveClass( /\blight\b/ );
-	await expect( page.locator( '.brand__name' ) ).toHaveText( 'Blazing Sun' );
-	await expect.poll( () => page.locator( '.theme-orb' ).evaluate( ( img ) => img.currentSrc ) ).toMatch( /\/sun-\d+\.webp$/ );
+	await expect( page.locator( '.brand__name:visible' ) ).toHaveText( 'Blazing Sun' );
+	await expect.poll( () => page.locator( '.theme-orb:visible img' ).evaluate( ( img ) => img.currentSrc ) ).toMatch( /\/sun-\d+\.webp$/ );
 	await expect( page.locator( '.sky--clouds' ) ).toBeVisible();
 	await expect( page.locator( '.sky--stars' ) ).toBeHidden();
 
@@ -65,7 +66,7 @@ test( 'language picker translates the page and remembers the choice', async ( { 
 	await page.getByRole( 'button', { name: 'Srpski' } ).click();
 
 	await expect( page.locator( 'html' ) ).toHaveAttribute( 'lang', 'sr' );
-	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Gradimo hrabre digitalne sisteme.' );
+	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Gradimo digitalne sisteme' );
 	await expect( page.locator( '#lang-menu' ) ).toBeHidden();
 
 	await page.reload();

@@ -3,9 +3,10 @@ import { LanguagePicker } from './LanguagePicker.js';
 import { StarField } from './StarField.js';
 import { CloudLayer } from './CloudLayer.js';
 import { VisitCounter } from './VisitCounter.js';
-import { OrbPlacer } from './OrbPlacer.js';
+import { ThemeOrb } from './ThemeOrb.js';
 import { GlassSpotlight } from './GlassSpotlight.js';
 import { Reveal } from './Reveal.js';
+import { BackToTop } from './BackToTop.js';
 
 /** Wires the page components together. */
 export class App {
@@ -13,11 +14,16 @@ export class App {
 		this.doc = doc;
 		this.stars = new StarField( doc.querySelector( '.sky--stars' ) );
 		this.clouds = new CloudLayer( doc.querySelector( '.sky--clouds' ) );
-		this.theme = new ThemeSwitcher( doc.documentElement );
 		this.language = new LanguagePicker( doc.querySelector( '.lang-picker' ) );
-		this.orb = new OrbPlacer( doc.querySelector( '.theme-orb' ), doc.querySelector( '.hero__glow' ) );
+		this.orb = new ThemeOrb( doc.documentElement, doc.querySelector( '.hero__glow' ) );
+		// Switching theme: the sun/moon rises out, the theme changes, the other one drops in.
+		this.theme = new ThemeSwitcher( doc.documentElement, undefined, {
+			beforeChange: () => this.orb.leave(),
+			afterChange: () => this.orb.arrive(),
+		} );
 		this.spotlight = new GlassSpotlight( doc );
 		this.reveal = new Reveal( doc.documentElement );
+		this.backToTop = new BackToTop( doc.querySelector( '.back-to-top' ), doc.querySelector( '.brand' ) );
 		this.visits = new VisitCounter( doc.querySelector( '[data-visit-counter]' ) );
 	}
 
@@ -31,6 +37,7 @@ export class App {
 		this.orb.init();
 		this.spotlight.init();
 		this.reveal.init();
+		this.backToTop.init();
 		this.visits.record();
 		this.registerServiceWorker();
 	}

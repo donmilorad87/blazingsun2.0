@@ -12,7 +12,7 @@ test.beforeEach( async ( { page } ) => {
 	await page.waitForLoadState( 'load' );
 } );
 
-const orbFile = ( page ) => page.locator( '.theme-orb' ).evaluate( ( img ) => new URL( img.currentSrc ).pathname );
+const orbFile = ( page ) => page.locator( '.theme-orb:visible img' ).evaluate( ( img ) => new URL( img.currentSrc ).pathname );
 
 const chosen = ( page, selector ) => page.locator( selector ).evaluate( ( img ) => ( {
 	inPicture: img.parentElement.tagName === 'PICTURE',
@@ -24,9 +24,9 @@ const chosen = ( page, selector ) => page.locator( selector ).evaluate( ( img ) 
 } ) );
 
 for ( const [ name, selector ] of [
-	[ 'sun/moon orb', '.theme-orb' ],
-	[ 'header logo', '.brand__logo' ],
-	[ 'theme toggle icon', '.theme-toggle img' ],
+	[ 'sun/moon orb', '.theme-orb:visible img' ],
+	[ 'header logo', '.brand__logo:visible' ],
+	[ 'theme toggle icon', '.theme-toggle img:visible' ],
 	[ 'current language flag', '.lang-picker__current img' ],
 ] ) {
 	test( `${ name }: <picture> with WebP, and the browser downloads a size that fits the slot`, async ( { page } ) => {
@@ -51,7 +51,7 @@ test( 'no wasted downloads: one large orb file at most, nothing requested twice,
 
 test( 'switching theme swaps every themed picture to the sun', async ( { page } ) => {
 	await page.getByRole( 'button', { name: 'Toggle between Blazing Sun and White Moon' } ).click();
-	for ( const selector of [ '.theme-orb', '.brand__logo', '.theme-toggle img' ] ) {
+	for ( const selector of [ '.theme-orb:visible img', '.brand__logo:visible', '.theme-toggle img:visible' ] ) {
 		await expect.poll( async () => ( await chosen( page, selector ) ).currentSrc ).toMatch( /\/sun-\d+\.webp$/ );
 	}
 } );

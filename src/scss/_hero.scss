@@ -19,12 +19,16 @@
 
 	h1 {
 		margin: 20px 0 44px;
-		font-size: clamp(3.6rem, 8vw, 7.8rem);
+
+		// Capped by viewport height too, so the hero content (even French, 4 lines) fits between header and footer.
+		font-size: clamp(3.6rem, min(8vw, 11svh), 7.8rem);
 		line-height: 0.86;
 		letter-spacing: -0.095em;
 
 		// "digital": editorial serif italic against the heavy sans.
 		em {
+			position: relative;
+			top: 8px;
 			padding-right: 0.06em;
 			color: var(--gold);
 			font-family: var(--font-serif);
@@ -63,9 +67,21 @@
 		}
 	}
 
-	// Empty column that keeps the layout balanced; on desktop the fixed sun/moon is centred on it (OrbPlacer.js).
+	// The spot the fixed sun/moon is centred on (ThemeOrb.js): exactly the size of its disc, so the orb's glow
+	// comes from behind it and the images are larger than the spot.
 	&__glow {
-		min-height: 500px;
+		justify-self: center;
+		width: calc(var(--orb-size) * #{$sun-disc});
+		aspect-ratio: 1;
+	}
+
+	// Desktop: exactly the screen between the sticky header and footer, content centred vertically
+	// (stays centred whatever the text length, e.g. in French).
+	@media (min-width: $breakpoint-tablet + 1) {
+		display: grid;
+		align-content: center;
+		min-height: calc(100svh - var(--header-h) - var(--footer-h));
+		padding-block: 40px;
 	}
 
 	@media (max-width: $breakpoint-tablet) {
@@ -115,9 +131,13 @@
 		@include glass;
 
 		color: var(--text);
+		transition:
+			transform 0.4s var(--ease-out),
+			background-color 0.3s ease;
 
+		// Same hover glass as the nav and language menu items; the border colour stays as it is.
 		&:hover {
-			border-color: var(--btn-hover-border);
+			background-color: var(--glass-bg-hover);
 		}
 	}
 

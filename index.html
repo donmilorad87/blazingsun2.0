@@ -13,8 +13,8 @@
 	<link rel="icon" type="image/png" href="/favicon.png">
 	<link rel="apple-touch-icon" href="/favicon.png">
 	<link rel="manifest" href="/manifest.json">
-	<!-- Applies the saved theme before first paint to avoid a dark→light flash. -->
-	<script>try{if(localStorage.getItem('blazing-theme')==='light')document.documentElement.classList.add('light')}catch(e){}</script>
+	<!-- Before first paint: apply the saved theme (no moon→sun flash) and hide the orb until ThemeOrb places it (failsafe: 4s). -->
+	<script>var d=document.documentElement;try{if(localStorage.getItem('blazing-theme')==='light')d.classList.add('light')}catch(e){}d.classList.add('orb-pending');setTimeout(function(){d.classList.remove('orb-pending')},4000)</script>
 	<link rel="stylesheet" href="/src/scss/main.scss">
 	<script type="module" src="/src/main.js"></script>
 	<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://blazingsun.space/#person","name":"Milorad Đuković","jobTitle":"Senior Full Stack Web Engineer","description":"Milorad Đuković is a Senior Full Stack Web Engineer with 15+ years of experience in JavaScript, TypeScript, Node.js, Rust, PHP, React, WordPress, Shopify, APIs, AI engineering and scalable web platforms.","url":"https://blazingsun.space/","telephone":"+381629616231","email":"djmyle@gmail.com","address":{"@type":"PostalAddress","streetAddress":"NH Svete Popovica 24","postalCode":"32300","addressLocality":"Gornji Milanovac","addressCountry":"RS"},"sameAs":["https://www.linkedin.com/in/donmilorad","https://github.com/donmilorad87"],"worksFor":{"@id":"https://blazingsun.space/#company"}},{"@type":"Organization","@id":"https://blazingsun.space/#company","name":"Blazing Sun","url":"https://blazingsun.space/","telephone":"+381629616231","email":"djmyle@gmail.com","address":{"@type":"PostalAddress","streetAddress":"NH Svete Popovica 24","postalCode":"32300","addressLocality":"Gornji Milanovac","addressCountry":"RS"},"identifier":[{"@type":"PropertyValue","propertyID":"MB","value":"67500156"},{"@type":"PropertyValue","propertyID":"PIB","value":"114340949"}],"founder":{"@id":"https://blazingsun.space/#person"}}]}</script>
@@ -22,13 +22,16 @@
 <body>
 	<canvas class="sky sky--stars" aria-hidden="true"></canvas>
 	<canvas class="sky sky--clouds" aria-hidden="true"></canvas>
-	<picture data-theme-picture><source type="image/webp" srcset="/images/responsive/moon-24.webp 24w, /images/responsive/moon-48.webp 48w, /images/responsive/moon-72.webp 72w, /images/responsive/moon-90.webp 90w, /images/responsive/moon-135.webp 135w, /images/responsive/moon-240.webp 240w, /images/responsive/moon-330.webp 330w, /images/responsive/moon-426.webp 426w" sizes="(max-width: 700px) min(330px, 72vw), min(500px, 40vw)"><img src="/images/responsive/moon-426.png" srcset="/images/responsive/moon-24.png 24w, /images/responsive/moon-48.png 48w, /images/responsive/moon-72.png 72w, /images/responsive/moon-90.png 90w, /images/responsive/moon-135.png 135w, /images/responsive/moon-240.png 240w, /images/responsive/moon-330.png 330w, /images/responsive/moon-426.png 426w" sizes="(max-width: 700px) min(330px, 72vw), min(500px, 40vw)" class="theme-orb" alt="" aria-hidden="true" width="426" height="426" fetchpriority="high"></picture>
+	<div class="theme-orb" data-theme-only="dark" aria-hidden="true"><picture><source type="image/webp" srcset="/images/responsive/moon-24.webp 24w, /images/responsive/moon-48.webp 48w, /images/responsive/moon-72.webp 72w, /images/responsive/moon-90.webp 90w, /images/responsive/moon-135.webp 135w, /images/responsive/moon-240.webp 240w, /images/responsive/moon-330.webp 330w, /images/responsive/moon-426.webp 426w" sizes="(max-width: 700px) min(330px, 72vw), min(500px, 40vw)"><img src="/images/responsive/moon-426.png" srcset="/images/responsive/moon-24.png 24w, /images/responsive/moon-48.png 48w, /images/responsive/moon-72.png 72w, /images/responsive/moon-90.png 90w, /images/responsive/moon-135.png 135w, /images/responsive/moon-240.png 240w, /images/responsive/moon-330.png 330w, /images/responsive/moon-426.png 426w" sizes="(max-width: 700px) min(330px, 72vw), min(500px, 40vw)" loading="lazy" class="theme-orb__image" alt="" width="426" height="426"></picture></div>
+	<div class="theme-orb" data-theme-only="light" aria-hidden="true"><picture><source type="image/webp" srcset="/images/responsive/sun-24.webp 24w, /images/responsive/sun-48.webp 48w, /images/responsive/sun-72.webp 72w, /images/responsive/sun-90.webp 90w, /images/responsive/sun-135.webp 135w, /images/responsive/sun-240.webp 240w, /images/responsive/sun-330.webp 330w, /images/responsive/sun-426.webp 426w" sizes="(max-width: 700px) min(330px, 72vw), min(500px, 40vw)"><img src="/images/responsive/sun-426.gif" srcset="/images/responsive/sun-426.gif 426w" sizes="(max-width: 700px) min(330px, 72vw), min(500px, 40vw)" loading="lazy" class="theme-orb__image" alt="" width="426" height="426"></picture></div>
 
 	<header class="site-header">
 		<nav class="wrap site-nav" aria-label="Main">
 			<a class="brand" href="#top">
-				<picture data-theme-picture><source type="image/webp" srcset="/images/responsive/moon-24.webp 24w, /images/responsive/moon-48.webp 48w, /images/responsive/moon-72.webp 72w, /images/responsive/moon-90.webp 90w, /images/responsive/moon-135.webp 135w, /images/responsive/moon-240.webp 240w, /images/responsive/moon-330.webp 330w, /images/responsive/moon-426.webp 426w" sizes="45px"><img src="/images/responsive/moon-426.png" srcset="/images/responsive/moon-24.png 24w, /images/responsive/moon-48.png 48w, /images/responsive/moon-72.png 72w, /images/responsive/moon-90.png 90w, /images/responsive/moon-135.png 135w, /images/responsive/moon-240.png 240w, /images/responsive/moon-330.png 330w, /images/responsive/moon-426.png 426w" sizes="45px" class="brand__logo" alt="White Moon logo" width="45" height="45"></picture>
-				<span class="brand__name">White Moon</span>
+				<picture><source type="image/webp" srcset="/images/responsive/moon-24.webp 24w, /images/responsive/moon-48.webp 48w, /images/responsive/moon-72.webp 72w, /images/responsive/moon-90.webp 90w, /images/responsive/moon-135.webp 135w, /images/responsive/moon-240.webp 240w, /images/responsive/moon-330.webp 330w, /images/responsive/moon-426.webp 426w" sizes="45px"><img src="/images/responsive/moon-426.png" srcset="/images/responsive/moon-24.png 24w, /images/responsive/moon-48.png 48w, /images/responsive/moon-72.png 72w, /images/responsive/moon-90.png 90w, /images/responsive/moon-135.png 135w, /images/responsive/moon-240.png 240w, /images/responsive/moon-330.png 330w, /images/responsive/moon-426.png 426w" sizes="45px" loading="lazy" class="brand__logo" alt="White Moon logo" width="45" height="45" data-theme-only="dark"></picture>
+				<picture><source type="image/webp" srcset="/images/responsive/sun-24.webp 24w, /images/responsive/sun-48.webp 48w, /images/responsive/sun-72.webp 72w, /images/responsive/sun-90.webp 90w, /images/responsive/sun-135.webp 135w, /images/responsive/sun-240.webp 240w, /images/responsive/sun-330.webp 330w, /images/responsive/sun-426.webp 426w" sizes="45px"><img src="/images/responsive/sun-426.gif" srcset="/images/responsive/sun-426.gif 426w" sizes="45px" loading="lazy" class="brand__logo" alt="Blazing Sun logo" width="45" height="45" data-theme-only="light"></picture>
+				<span class="brand__name" data-theme-only="dark">White Moon</span>
+				<span class="brand__name" data-theme-only="light">Blazing Sun</span>
 			</a>
 			<div class="site-nav__links">
 				<a href="#about" data-i18n="nav.about">About</a>
@@ -49,7 +52,8 @@
 					</div>
 				</div>
 				<button class="control theme-toggle" type="button" aria-label="Toggle between Blazing Sun and White Moon" aria-pressed="false">
-					<picture data-theme-picture><source type="image/webp" srcset="/images/responsive/moon-24.webp 24w, /images/responsive/moon-48.webp 48w, /images/responsive/moon-72.webp 72w, /images/responsive/moon-90.webp 90w, /images/responsive/moon-135.webp 135w, /images/responsive/moon-240.webp 240w, /images/responsive/moon-330.webp 330w, /images/responsive/moon-426.webp 426w" sizes="24px"><img src="/images/responsive/moon-426.png" srcset="/images/responsive/moon-24.png 24w, /images/responsive/moon-48.png 48w, /images/responsive/moon-72.png 72w, /images/responsive/moon-90.png 90w, /images/responsive/moon-135.png 135w, /images/responsive/moon-240.png 240w, /images/responsive/moon-330.png 330w, /images/responsive/moon-426.png 426w" sizes="24px" alt="" width="24" height="24"></picture>
+					<picture><source type="image/webp" srcset="/images/responsive/moon-24.webp 24w, /images/responsive/moon-48.webp 48w, /images/responsive/moon-72.webp 72w, /images/responsive/moon-90.webp 90w, /images/responsive/moon-135.webp 135w, /images/responsive/moon-240.webp 240w, /images/responsive/moon-330.webp 330w, /images/responsive/moon-426.webp 426w" sizes="24px"><img src="/images/responsive/moon-426.png" srcset="/images/responsive/moon-24.png 24w, /images/responsive/moon-48.png 48w, /images/responsive/moon-72.png 72w, /images/responsive/moon-90.png 90w, /images/responsive/moon-135.png 135w, /images/responsive/moon-240.png 240w, /images/responsive/moon-330.png 330w, /images/responsive/moon-426.png 426w" sizes="24px" loading="lazy" alt="" width="24" height="24" data-theme-only="dark"></picture>
+					<picture><source type="image/webp" srcset="/images/responsive/sun-24.webp 24w, /images/responsive/sun-48.webp 48w, /images/responsive/sun-72.webp 72w, /images/responsive/sun-90.webp 90w, /images/responsive/sun-135.webp 135w, /images/responsive/sun-240.webp 240w, /images/responsive/sun-330.webp 330w, /images/responsive/sun-426.webp 426w" sizes="24px"><img src="/images/responsive/sun-426.gif" srcset="/images/responsive/sun-426.gif 426w" sizes="24px" loading="lazy" alt="" width="24" height="24" data-theme-only="light"></picture>
 				</button>
 			</div>
 		</nav>
@@ -60,7 +64,7 @@
 			<div class="wrap hero__grid">
 				<div>
 					<div class="eyebrow" data-i18n="hero.kicker">Senior Full Stack Web Engineer</div>
-					<h1 data-i18n-html="hero.title">Building bold <em>digital</em> systems.</h1>
+					<h1 data-i18n-html="hero.title">Building <em>digital</em> systems</h1>
 					<p class="hero__lead" data-i18n="hero.lead">Milorad Đuković is a senior full-stack engineer with 15+ years of experience building high-performance web applications, APIs, products and creative technology.</p>
 					<div class="hero__actions">
 						<a class="btn btn--primary" href="#contact" data-i18n="hero.primary">Let’s work together ↗</a>
@@ -166,18 +170,18 @@
 			<div class="wrap">
 				<div class="section-head">
 					<div>
-						<div class="eyebrow">06 / Expanded CV</div>
-						<h2>More than a stack.</h2>
+						<div class="eyebrow" data-i18n="cv.eyebrow">05 / Expanded CV</div>
+						<h2 data-i18n="cv.title">More than a stack.</h2>
 					</div>
-					<p>Selected capabilities, education and projects from the extended CV.</p>
+					<p data-i18n="cv.note">Selected capabilities, education and projects from the extended CV.</p>
 				</div>
 				<div class="grid grid--3">
-					<article class="panel cv-card"><h3>AI Engineering</h3><p>Claude Code, Codex, OpenAI and Ollama APIs, agentic coding workflows, AI automations, agents, subagents, commands, hooks and deployment-assisted development.</p></article>
-					<article class="panel cv-card"><h3>Systems &amp; Architecture</h3><p>Rust Actix-Web APIs, WebAssembly, Node.js services, queues, workers, jobs, Pub/Sub, WebSockets, WebRTC, Canvas API, WebAuthn and PWA architecture.</p></article>
-					<article class="panel cv-card"><h3>Commerce &amp; Platforms</h3><p>WordPress themes and plugins, WooCommerce, Shopify Apps, Remix, Liquid, PrestaShop, payment integrations, headless WordPress and reusable React libraries.</p></article>
-					<article class="panel cv-card"><h3>Education</h3><p>Computer Software Engineering at Technical College Kragujevac, plus Electrical and Electronics Engineering at High Electro Technical School Jovan Žujović.</p></article>
-					<article class="panel cv-card"><h3>Selected Projects</h3><p>Empower Nation medical video chat, Ocamba integrations, Hood Engage Shopify and WordPress products, Live from Montreux, Performance Golf and multiple Blazing Sun Rust, Node.js and MERN experiments.</p></article>
-					<article class="panel cv-card"><h3>Engineering Mindset</h3><p>Complex problem solving, documentation, testing, performance optimization, accessibility, SEO structure, collaboration, mentoring and continuous technical research.</p></article>
+					<article class="panel cv-card"><h3 data-i18n="cv.card1.title">AI Engineering</h3><p data-i18n="cv.card1.text">Claude Code, Codex, OpenAI and Ollama APIs, agentic coding workflows, AI automations, agents, subagents, commands, hooks and deployment-assisted development.</p></article>
+					<article class="panel cv-card"><h3 data-i18n="cv.card2.title">Systems &amp; Architecture</h3><p data-i18n="cv.card2.text">Rust Actix-Web APIs, WebAssembly, Node.js services, queues, workers, jobs, Pub/Sub, WebSockets, WebRTC, Canvas API, WebAuthn and PWA architecture.</p></article>
+					<article class="panel cv-card"><h3 data-i18n="cv.card3.title">Commerce &amp; Platforms</h3><p data-i18n="cv.card3.text">WordPress themes and plugins, WooCommerce, Shopify Apps, Remix, Liquid, PrestaShop, payment integrations, headless WordPress and reusable React libraries.</p></article>
+					<article class="panel cv-card"><h3 data-i18n="cv.card4.title">Education</h3><p data-i18n="cv.card4.text">Computer Software Engineering at Technical College Kragujevac, plus Electrical and Electronics Engineering at High Electro Technical School Jovan Žujović.</p></article>
+					<article class="panel cv-card"><h3 data-i18n="cv.card5.title">Selected Projects</h3><p data-i18n="cv.card5.text">Empower Nation medical video chat, Ocamba integrations, Hood Engage Shopify and WordPress products, Live from Montreux, Performance Golf and multiple Blazing Sun Rust, Node.js and MERN experiments.</p></article>
+					<article class="panel cv-card"><h3 data-i18n="cv.card6.title">Engineering Mindset</h3><p data-i18n="cv.card6.text">Complex problem solving, documentation, testing, performance optimization, accessibility, SEO structure, collaboration, mentoring and continuous technical research.</p></article>
 				</div>
 			</div>
 		</section>
@@ -185,7 +189,7 @@
 		<section id="contact" class="contact">
 			<div class="wrap">
 				<div class="panel contact__box">
-					<div class="eyebrow" data-i18n="contact.eyebrow">05 / Contact</div>
+					<div class="eyebrow" data-i18n="contact.eyebrow">06 / Contact</div>
 					<h2 data-i18n="contact.title">Let’s build something sharp.</h2>
 					<p data-i18n="contact.text">For a serious project, a technical challenge, or an idea that deserves great architecture — get in touch.</p>
 					<div class="contact__links">
@@ -207,5 +211,11 @@
 			<span class="site-footer__visits" data-visit-counter hidden></span>
 		</div>
 	</footer>
+
+	<!-- Glass back-to-top button; the gold ring fills with scroll progress (BackToTop.js). -->
+	<button class="back-to-top" type="button" aria-label="Back to top" data-i18n-aria-label="backToTop.label">
+		<svg class="back-to-top__ring" viewBox="0 0 48 48" aria-hidden="true"><circle class="back-to-top__track" cx="24" cy="24" r="22.5"/><circle class="back-to-top__progress" cx="24" cy="24" r="22.5" pathLength="100"/></svg>
+		<svg class="back-to-top__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>
+	</button>
 </body>
 </html>

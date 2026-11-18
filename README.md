@@ -157,6 +157,9 @@ blazing_sun/
 │   │   ├── Translator.js         Fills [data-i18n] (text) and [data-i18n-html] (trusted markup)
 │   │   ├── translations.js       en / sr / fr strings
 │   │   ├── VisitCounter.js       POST /api/visits → writes the total into the hidden footer element
+│   │   ├── ThemeOrb.js           Places the fixed sun/moon, drop-in / rise-out animations
+│   │   ├── BackToTop.js          Glass back-to-top button with scroll-progress ring
+│   │   ├── GlassSpotlight.js, Reveal.js   Card cursor light, staggered rise-in
 │   │   ├── CanvasLayer.js        Base class: full-screen canvas, animates only while active
 │   │   ├── StarField.js          Parallax stars (dark theme)
 │   │   ├── CloudLayer.js         Drifting clouds (light theme)
@@ -227,6 +230,18 @@ blazing_sun/
   - After changing a source image, run `npm run images` (uses `sharp`, dev-only) to regenerate `public/images/responsive/`, and commit the result.
 - **Fonts:** self-hosted WOFF2 files in `public/fonts/`: *JetBrains Mono* (labels, dates, tech lists) and *Instrument Serif* italic (the quote and *digital* in the hero). Both are under the SIL Open Font License; the license texts sit next to the files. Latin-ext files load only when characters like č, ć, š, ž or đ appear.
 - **Glass:** one style for every card, the header, the footer and the language menu: `--glass-*` tokens in `_tokens.scss`, very transparent (4–6%) with a 6px blur. Cards add a light-catching gradient edge, a cursor spotlight (`GlassSpotlight.js`), corner ticks on hover and a staggered rise-in (`Reveal.js`; off with reduced motion).
+
+### Sun and moon (`ThemeOrb.js`)
+
+- **No flash, no jump on load:** both themes' logo, name and orb are in the HTML, and CSS shows the right ones based on `html.light`, which an inline `<head>` script sets before first paint. The other theme's images are `loading="lazy"`, so they download only when shown. The orb stays hidden (`html.orb-pending`) until the web fonts and its image are ready and its spot has been measured. Then it drops in from the top and lands exactly on the spot, with no overshoot or correction.
+- **Theme switch:** the current sun/moon rises out of the top, the theme changes, then the other one drops in. Clicks during the sequence are ignored. Progress is exposed as `<html data-orb="arriving|idle|leaving">`. With reduced motion, the switch is instant.
+- **Shape and glow:** the moon is shown at 87.9% so its disc matches the sun's body (flares excluded). The glow is a static `box-shadow` on a disc-sized circle **behind** each image. That's cheap: a `drop-shadow` filter would be recomputed on every frame of the animated sun. The disc ratios were measured from the image pixels and live in `_tokens.scss` (`$sun-disc`, `$moon-disc`, `$sun-disc-offset-x`).
+- **Desktop layout:** the hero fills exactly the space between header and footer and centres its content vertically, in CSS only. The heading size is also capped by the viewport height, so longer languages (French) still fit.
+
+### Hover glass and back to top
+
+- Nav links, language menu items and the ghost button get the same glass on hover (the `glass-hover` mixin): blurred background plus the standard glass border. The border is always present (transparent), so nothing moves, and its colour never changes.
+- `BackToTop.js` adds a round glass button bottom-right that appears after scrolling. Its gold ring fills with scroll progress, it scrolls smoothly back to the top, then moves keyboard focus to the logo. Its label is translated via `data-i18n-aria-label`.
 
 ### Checking the visit counter
 

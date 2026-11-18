@@ -29,8 +29,6 @@ test( 'srcset lists one candidate per width with a w descriptor', () => {
 
 test( 'index.html uses exactly the srcsets from imageSets.js (no hand-written drift)', () => {
 	for ( const set of Object.values( IMAGE_SETS ) ) {
-		const used = html.includes( `srcset="${ srcset( set, set.webp ) }"` );
-		const unused = set.name === 'sun'; // only swapped in by the theme switcher
-		assert.equal( used, ! unused, `${ set.name } srcset in index.html` );
+		assert.ok( html.includes( `srcset="${ srcset( set, set.webp ) }"` ), `${ set.name } srcset in index.html` );
 	}
 } );

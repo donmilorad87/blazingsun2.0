@@ -37,6 +37,12 @@ picture {
 	}
 }
 
+// Both themes' logo, name and orb are in the HTML; show only the current theme's (set in <head> before first paint).
+:root.light [data-theme-only="dark"],
+:root:not(.light) [data-theme-only="light"] {
+	display: none !important;
+}
+
 // Component display rules (e.g. `.site-footer span { display: block }`) must never un-hide [hidden] elements.
 [hidden] {
 	display: none !important;
