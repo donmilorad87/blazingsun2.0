@@ -1,14 +1,16 @@
 # Local development stack: nginx (frontend + /api) → PHP-FPM 8.5 → MySQL.
-#   npm run docker:up      start everything (http://127.0.0.1:8080)
+#   npm run docker:up      start everything → http://blazingsun.local (needs "127.0.0.1 blazingsun.local" in /etc/hosts)
 #   npm run db:migrate     create/update tables and procedures
-# Ports bind to 127.0.0.1 only; override with BLAZINGSUN_HTTP_PORT / BLAZINGSUN_DB_PORT in a .env file.
+# Ports bind to 127.0.0.1 only (other local sites use their own 127.0.0.x). Other PCs on the LAN reach it through
+# the shared reverse proxy (../reverse-proxy) at https://blazingsun.local.
+# Override with BLAZINGSUN_HTTP_PORT / BLAZINGSUN_DB_PORT in .env.
 name: blazingsun
 
 services:
   nginx:
     image: nginx:1.31-alpine
     ports:
-      - "127.0.0.1:${BLAZINGSUN_HTTP_PORT:-8080}:80"
+      - "127.0.0.1:${BLAZINGSUN_HTTP_PORT:-80}:80"
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./dist:/var/www/dist:ro

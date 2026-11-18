@@ -22,7 +22,7 @@ export default [
 		languageOptions: { globals: { ...globals.serviceworker } },
 	},
 	{
-		files: [ 'tests/**', '*.config.js' ],
+		files: [ 'tests/**', 'scripts/**', '*.config.js' ],
 		languageOptions: { globals: { ...globals.node } },
 	},
 ];

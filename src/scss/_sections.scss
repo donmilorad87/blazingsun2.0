@@ -29,9 +29,20 @@ section {
 	}
 }
 
+// Small instrument-style readout used for indices, dates and tech lists.
+@mixin readout($size: 0.72rem) {
+	font-family: var(--font-mono);
+	font-size: $size;
+	font-weight: 500;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	font-variant-numeric: tabular-nums;
+}
+
 .grid {
 	display: grid;
-	gap: 15px;
+	gap: 16px;
+	counter-reset: card;
 
 	&--2 {
 		grid-template-columns: repeat(2, 1fr);
@@ -49,11 +60,11 @@ section {
 	}
 }
 
-// About
+// ---------------------------------------------------------------- About
 .stats {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 14px;
+	gap: 16px;
 
 	@media (max-width: $breakpoint-tablet) {
 		grid-template-columns: repeat(2, 1fr);
@@ -61,19 +72,28 @@ section {
 }
 
 .stat {
-	padding: 24px;
+	padding: 26px 24px 24px;
 
 	strong {
 		display: block;
-		margin-bottom: 8px;
-		color: var(--gold);
-		font-size: 2.6rem;
-		line-height: 1;
+		margin-bottom: 14px;
+		background: linear-gradient(160deg, var(--text) 10%, var(--gold) 90%);
+		background-clip: text;
+		color: transparent;
+		font-size: clamp(2.6rem, 4vw, 3.4rem);
+		font-weight: 800;
+		font-variant-numeric: tabular-nums;
+		line-height: 0.9;
+		letter-spacing: -0.06em;
 	}
 
 	span {
+		display: block;
+		padding-top: 12px;
+		border-top: 1px solid var(--glass-border);
 		color: var(--muted);
-		font-size: 0.9rem;
+		font-size: 0.88rem;
+		line-height: 1.45;
 	}
 }
 
@@ -90,110 +110,173 @@ section {
 }
 
 .quote {
-	padding: 28px;
-	border-radius: 20px;
-	font-size: 1.3rem;
-	font-weight: 750;
+	padding: 34px 32px;
+	border-radius: 22px;
+	font-size: clamp(1.3rem, 1.9vw, 1.55rem);
+	font-weight: 700;
+	line-height: 1.35;
+	letter-spacing: -0.015em;
 }
 
 .about__copy {
+	padding: 34px 32px;
 	color: var(--copy);
 	font-size: 1.1rem;
+
+	p {
+		margin: 0;
+	}
 }
 
 .tags {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 9px;
-	margin: 21px 0 0;
+	gap: 8px;
+	margin: 24px 0 0;
 	padding: 0;
 	list-style: none;
 }
 
 .tag {
 	@include glass;
+	@include readout(0.68rem);
 
-	padding: 8px 12px;
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	padding: 8px 14px;
 	border-radius: 999px;
 	color: var(--tag-text);
-	font-size: 0.82rem;
-	transition: border-color 0.2s ease;
+	letter-spacing: 0.08em;
+	transition: border-color 0.3s ease, color 0.3s ease;
+
+	&::before {
+		content: "✦";
+		color: var(--gold);
+		font-size: 0.7em;
+	}
 
 	&:hover {
 		border-color: var(--btn-hover-border);
+		color: var(--text);
 	}
 }
 
-// Stack + CV
-.card {
-	padding: 25px;
-
-	h3 {
-		margin: 0 0 9px;
-	}
-
-	p {
-		margin: 0;
-		color: var(--muted);
-	}
-
-	b {
-		color: var(--gold);
-	}
-}
-
-#cv-highlights {
-	.section-head {
-		margin-bottom: 28px;
-	}
-
-	.grid {
-		gap: 16px;
-	}
-}
-
+// ---------------------------------------------------------------- Stack + CV (auto-numbered 01, 02, …)
+.card,
 .cv-card {
-	padding: 25px;
+	padding: 26px 26px 28px;
 
 	h3 {
 		margin: 0 0 10px;
-		color: var(--gold);
-		font-size: 1.05rem;
+		font-size: 1.15rem;
+		letter-spacing: -0.01em;
+
+		&::before {
+			@include readout(0.68rem);
+
+			content: counter(card, decimal-leading-zero) " ⁄";
+			counter-increment: card;
+			display: block;
+			margin-bottom: 18px;
+			color: var(--muted);
+			transition: color 0.4s ease;
+		}
 	}
 
 	p {
 		margin: 0;
 		color: var(--muted);
-		font-size: 0.94rem;
+		font-size: 0.95rem;
+		line-height: 1.6;
+	}
+
+	&:hover h3::before {
+		color: var(--gold);
 	}
 }
 
-// Experience
+.card b {
+	color: var(--gold);
+	font-weight: 700;
+}
+
+.cv-card h3 {
+	color: var(--gold);
+}
+
+#cv-highlights .section-head {
+	margin-bottom: 28px;
+}
+
+// ---------------------------------------------------------------- Experience: jobs on an orbit line
+$orbit-gutter: 34px; // space left of the cards for the orbit line
+$orbit-x: 9px; // line position inside the gutter
+$node: 11px;
+$panel-border: 1px; // .panel border (glass mixin); the date sits inside it
+
 .timeline {
+	position: relative;
 	display: grid;
 	gap: 16px;
+	padding-left: $orbit-gutter;
+
+	&::before {
+		content: "";
+		position: absolute;
+		top: 18px;
+		bottom: 18px;
+		left: $orbit-x;
+		width: 1px;
+		background: linear-gradient(to bottom, var(--orbit), var(--glass-border) 70%, transparent);
+	}
 }
 
 .job {
+	--job-pad: 30px;
+
 	display: grid;
 	grid-template-columns: 185px 1fr;
 	gap: 30px;
-	padding: 27px 30px;
+	padding: 28px var(--job-pad);
 
 	h3 {
-		margin: 0 0 3px;
-		font-size: 1.28rem;
+		margin: 0 0 4px;
+		font-size: 1.3rem;
+		letter-spacing: -0.015em;
 	}
 
 	p {
-		margin: 10px 0 0;
+		margin: 12px 0 0;
 		color: var(--muted);
+		line-height: 1.6;
 	}
 
 	&__date {
+		@include readout(0.72rem);
+
 		color: var(--gold);
-		font-size: 0.8rem;
-		font-weight: 900;
+
+		// Glowing node on the orbit line, level with the date.
+		&::before {
+			content: "";
+			position: absolute;
+			top: 0.35em;
+
+			// Centre of the 1px line (orbit-x + 0.5px), measured from the date's left edge.
+			left: calc(#{$orbit-x} + 0.5px - #{$node * 0.5} - #{$orbit-gutter} - #{$panel-border} - var(--job-pad));
+			width: $node;
+			height: $node;
+			border-radius: 50%;
+			background: var(--gold);
+			box-shadow: 0 0 0 4px var(--glass-bg), 0 0 14px var(--gold);
+			transition: transform 0.4s var(--ease-out), box-shadow 0.4s ease;
+		}
+	}
+
+	&:hover &__date::before {
+		box-shadow: 0 0 0 5px var(--glass-border), 0 0 24px var(--gold);
+		transform: scale(1.25);
 	}
 
 	&__company {
@@ -202,54 +285,75 @@ section {
 	}
 
 	@media (max-width: $breakpoint-tablet) {
+		--job-pad: 22px;
+
 		grid-template-columns: 1fr;
-		gap: 8px;
-		padding: 23px;
+		gap: 10px;
+		padding-block: 24px;
 	}
 }
 
-// Projects
+// ---------------------------------------------------------------- Projects
 .project {
-	padding: 27px;
+	display: flex;
+	flex-direction: column;
+	padding: 28px;
 
 	h3 {
-		margin: 13px 0 7px;
-		font-size: 1.5rem;
+		margin: 16px 0 8px;
+		font-size: 1.6rem;
+		letter-spacing: -0.03em;
 	}
 
 	p {
-		margin: 0 0 15px;
+		flex: 1;
+		margin: 0 0 22px;
 		color: var(--muted);
+		line-height: 1.6;
 	}
 
 	&__number {
+		@include readout(0.68rem);
+
 		color: var(--gold);
-		font-size: 0.8rem;
-		font-weight: 900;
 	}
 
 	&__tech {
-		font-size: 0.85rem;
-		font-weight: 750;
+		@include readout(0.66rem);
+
+		padding-top: 16px;
+		border-top: 1px dashed var(--glass-border);
+		color: var(--muted);
+		letter-spacing: 0.1em;
+		line-height: 1.8;
 	}
 }
 
-// Contact
+// ---------------------------------------------------------------- Contact
 .contact {
 	padding-top: 55px;
 	padding-bottom: 95px;
 
 	&__box {
-		padding: 42px;
+		// Concentric orbit rings in the top-right corner, under the corner ticks.
+		@include corner-ticks($extra: radial-gradient(
+			circle at 100% 0%,
+			transparent 0 89px, var(--orbit) 90px, transparent 91px 159px,
+			var(--glass-border) 160px, transparent 161px 239px,
+			var(--glass-border) 240px, transparent 241px
+		));
+
+		padding: clamp(28px, 5vw, 56px);
 
 		h2 {
-			margin: 9px 0;
+			margin: 12px 0;
 			font-size: clamp(2.5rem, 5vw, 5rem);
 			line-height: 0.9;
 			letter-spacing: -0.08em;
 		}
 
 		p {
+			max-width: 560px;
 			color: var(--muted);
 		}
 	}
@@ -258,19 +362,23 @@ section {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 10px;
-		margin-top: 22px;
+		margin-top: 28px;
 	}
 
 	&__link {
-		padding: 10px 13px;
-		border: 1px solid var(--line);
-		border-radius: 10px;
-		font-size: 0.85rem;
-		font-weight: 800;
+		@include glass;
+		@include readout(0.74rem);
+
+		padding: 12px 16px;
+		border-radius: 999px;
+		letter-spacing: 0.06em;
+		text-transform: none;
+		transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s var(--ease-out);
 
 		&:hover {
 			border-color: var(--gold);
 			color: var(--gold);
+			transform: translateY(-2px);
 		}
 	}
 }

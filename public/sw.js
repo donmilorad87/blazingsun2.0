@@ -68,4 +68,4 @@ class OfflineCache {
 	}
 }
 
-new OfflineCache( `blazing-sun-v${ CACHE_VERSION }`, [ '/', '/manifest.json', '/favicon.png', '/images/moon.png' ] ).listen( self );
+new OfflineCache( `blazing-sun-v${ CACHE_VERSION }`, [ '/', '/manifest.json', '/favicon.png' ] ).listen( self );

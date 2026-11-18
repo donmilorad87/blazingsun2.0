@@ -49,7 +49,7 @@ test( 'theme toggle switches to Blazing Sun and remembers it', async ( { page } 
 	await toggle.click();
 	await expect( page.locator( 'html' ) ).toHaveClass( /\blight\b/ );
 	await expect( page.locator( '.brand__name' ) ).toHaveText( 'Blazing Sun' );
-	await expect( page.locator( '.theme-orb' ) ).toHaveAttribute( 'src', /sun\.gif$/ );
+	await expect.poll( () => page.locator( '.theme-orb' ).evaluate( ( img ) => img.currentSrc ) ).toMatch( /\/sun-\d+\.webp$/ );
 	await expect( page.locator( '.sky--clouds' ) ).toBeVisible();
 	await expect( page.locator( '.sky--stars' ) ).toBeHidden();
 

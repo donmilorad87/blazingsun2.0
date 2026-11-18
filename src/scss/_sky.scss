@@ -13,7 +13,9 @@
 		opacity: 0.82;
 	}
 
+	// Above the sun/moon orb (z-index 0): in the light theme the clouds drift in front of the sun.
 	&--clouds {
+		z-index: 1;
 		display: none;
 		opacity: 0.72;
 	}
@@ -36,9 +38,17 @@
 	height: auto;
 	object-fit: contain;
 	opacity: 0.72;
-	filter: drop-shadow(0 16px 30px rgb(0 0 0 / 22%));
+	filter: var(--orb-glow);
 	transform: translateY(-50%);
 	pointer-events: none;
+
+	// Desktop: centred on the hero's glow spot (OrbPlacer.js), still fixed while scrolling.
+	&.is-placed {
+		top: var(--orb-y);
+		right: auto;
+		left: var(--orb-x);
+		transform: translate(-50%, -50%);
+	}
 
 	@media (max-width: $breakpoint-orb) {
 		top: 44%;
@@ -49,9 +59,8 @@
 	}
 }
 
-.site-header,
 main,
 .site-footer {
 	position: relative;
-	z-index: 1;
+	z-index: 2;
 }

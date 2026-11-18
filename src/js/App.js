@@ -3,6 +3,9 @@ import { LanguagePicker } from './LanguagePicker.js';
 import { StarField } from './StarField.js';
 import { CloudLayer } from './CloudLayer.js';
 import { VisitCounter } from './VisitCounter.js';
+import { OrbPlacer } from './OrbPlacer.js';
+import { GlassSpotlight } from './GlassSpotlight.js';
+import { Reveal } from './Reveal.js';
 
 /** Wires the page components together. */
 export class App {
@@ -12,6 +15,9 @@ export class App {
 		this.clouds = new CloudLayer( doc.querySelector( '.sky--clouds' ) );
 		this.theme = new ThemeSwitcher( doc.documentElement );
 		this.language = new LanguagePicker( doc.querySelector( '.lang-picker' ) );
+		this.orb = new OrbPlacer( doc.querySelector( '.theme-orb' ), doc.querySelector( '.hero__glow' ) );
+		this.spotlight = new GlassSpotlight( doc );
+		this.reveal = new Reveal( doc.documentElement );
 		this.visits = new VisitCounter( doc.querySelector( '[data-visit-counter]' ) );
 	}
 
@@ -22,6 +28,9 @@ export class App {
 		this.doc.addEventListener( 'themechange', ( event ) => this.onThemeChange( event.detail.isLight ) );
 		this.theme.init();
 		this.language.init();
+		this.orb.init();
+		this.spotlight.init();
+		this.reveal.init();
 		this.visits.record();
 		this.registerServiceWorker();
 	}

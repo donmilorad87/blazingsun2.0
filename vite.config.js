@@ -32,6 +32,6 @@ export default defineConfig( {
 	plugins: [ stampServiceWorkerVersion() ],
 	server: {
 		// `npm run docker:up` serves the PHP API through nginx; the dev server forwards /api to it.
-		proxy: { '/api': `http://127.0.0.1:${ process.env.BLAZINGSUN_HTTP_PORT || 8080 }` },
+		proxy: { '/api': `http://127.0.0.1:${ process.env.BLAZINGSUN_HTTP_PORT || 80 }` },
 	},
 } );

@@ -27,6 +27,16 @@ img {
 	max-width: 100%;
 }
 
+// <picture> only chooses the file; the <img> inside lays out exactly as if it stood alone.
+picture {
+	display: contents;
+
+	// <source> never renders, but under display: contents it would become a flex/grid item and take a gap.
+	> source {
+		display: none;
+	}
+}
+
 // Component display rules (e.g. `.site-footer span { display: block }`) must never un-hide [hidden] elements.
 [hidden] {
 	display: none !important;

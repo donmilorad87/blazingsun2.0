@@ -1,10 +1,12 @@
 import { PreferenceStore } from './PreferenceStore.js';
+import { IMAGE_SETS } from './imageSets.js';
+import { ResponsivePicture } from './ResponsivePicture.js';
 
 const STORAGE_KEY = 'blazing-theme';
 
 const THEMES = {
-	dark: { name: 'White Moon', image: '/images/moon.png' },
-	light: { name: 'Blazing Sun', image: '/images/sun.gif' },
+	dark: { name: 'White Moon', images: IMAGE_SETS.moon },
+	light: { name: 'Blazing Sun', images: IMAGE_SETS.sun },
 };
 
 /**
@@ -18,7 +20,7 @@ export class ThemeSwitcher {
 		this.toggle = root.querySelector( '.theme-toggle' );
 		this.brandLogo = root.querySelector( '.brand__logo' );
 		this.brandName = root.querySelector( '.brand__name' );
-		this.images = root.querySelectorAll( '[data-theme-src]' );
+		this.pictures = root.querySelectorAll( '[data-theme-picture]' );
 	}
 
 	init() {
@@ -37,9 +39,7 @@ export class ThemeSwitcher {
 	apply( isLight ) {
 		const theme = isLight ? THEMES.light : THEMES.dark;
 		this.root.classList.toggle( 'light', isLight );
-		this.images.forEach( ( img ) => {
-			img.src = theme.image;
-		} );
+		this.pictures.forEach( ( picture ) => ResponsivePicture.show( picture, theme.images ) );
 		this.brandLogo.alt = `${ theme.name } logo`;
 		this.brandName.textContent = theme.name;
 		this.toggle.setAttribute( 'aria-pressed', String( isLight ) );

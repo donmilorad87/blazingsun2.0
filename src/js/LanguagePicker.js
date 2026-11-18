@@ -1,6 +1,10 @@
 import { DEFAULT_LANGUAGE, LANGUAGES } from './translations.js';
 import { Translator } from './Translator.js';
 import { PreferenceStore } from './PreferenceStore.js';
+import { IMAGE_SETS } from './imageSets.js';
+import { ResponsivePicture } from './ResponsivePicture.js';
+
+const FLAGS = { sr: IMAGE_SETS.flagRs, en: IMAGE_SETS.flagGb, fr: IMAGE_SETS.flagFr };
 
 const STORAGE_KEY = 'blazing-language';
 
@@ -56,7 +60,7 @@ export class LanguagePicker {
 			option.classList.toggle( 'is-active', isActive );
 			option.toggleAttribute( 'aria-current', isActive );
 			if ( isActive ) {
-				this.current.querySelector( 'img' ).src = option.querySelector( 'img' ).src;
+				ResponsivePicture.show( this.current.querySelector( 'picture' ), FLAGS[ lang ] );
 			}
 		} );
 		this.current.setAttribute( 'aria-label', LANGUAGES[ lang ] );

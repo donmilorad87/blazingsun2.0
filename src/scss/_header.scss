@@ -2,17 +2,26 @@
 @use "glass" as *;
 
 .site-header {
-	@include glass;
-
 	position: sticky;
 	top: 0;
 	z-index: 100;
-	background: var(--glass-bar-bg);
-	border-top-color: rgb(255 255 255 / 10%);
+
+	// The glass lives on a pseudo-element: an element with backdrop-filter becomes a "backdrop root",
+	// and the language menu inside it could then only blur the header itself, not the page behind it.
+	&::before {
+		@include glass;
+
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: 0; // not -1: Chromium ignores backdrop-filter on negative z-index layers
+		border-top-color: rgb(255 255 255 / 10%);
+	}
 }
 
 .site-nav {
 	position: relative;
+	z-index: 1; // above the header's glass layer
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -101,6 +110,8 @@
 	}
 
 	&__menu {
+		@include glass;
+
 		position: absolute;
 		top: 36px;
 		right: 0;
@@ -109,11 +120,7 @@
 		min-width: 132px;
 		padding: 4px;
 		overflow: hidden;
-		background: var(--menu-bg);
-		border: 1px solid var(--glass-border);
 		border-radius: 10px;
-		box-shadow: var(--menu-shadow);
-		backdrop-filter: blur(6px) saturate(150%);
 
 		&[hidden] {
 			display: none;

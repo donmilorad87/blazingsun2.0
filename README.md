@@ -48,7 +48,7 @@ npm install
 npx playwright install chromium            # once, for E2E tests
 
 npm run build                              # dist/ (site + packaged API)
-npm run docker:up                          # nginx + PHP 8.5 + MySQL → http://127.0.0.1:8080
+npm run docker:up                          # nginx + PHP 8.5 + MySQL → http://blazingsun.local
 docker compose exec php composer install   # PHP dev tools (PHPUnit, PHPStan) into server/vendor
 npm run db:migrate                         # create table + stored procedures
 
@@ -62,7 +62,7 @@ npm run dev                                # http://localhost:5173, hot reload; 
 `docker-compose.yml` plus `docker/` reproduce production locally:
 
 ```
-browser ──► nginx :8080 ──┬── /        → dist/ (built site)
+browser ──► nginx :80 ────┬── /        → dist/ (built site)
                           └── /api/*   → php-fpm (PHP 8.5) → server/public/index.php ──► mysql (MySQL 26.10)
 ```
 
@@ -74,16 +74,28 @@ browser ──► nginx :8080 ──┬── /        → dist/ (built site)
 
 | What | Value |
 |---|---|
-| Site + API | http://127.0.0.1:8080 (API at `/api/…`) |
+| Site + API | http://blazingsun.local (API at `/api/…`); needs `127.0.0.1 blazingsun.local` in `/etc/hosts` |
 | MySQL from the host | `127.0.0.1:3307`, user `blazingsun` / password `blazingsun` (root: `root`) |
 | Local API config | `docker/php/config.local.php` (local-only credentials; migration token `local-dev-token`) |
 
-Ports bind to `127.0.0.1` only. To change them, set `BLAZINGSUN_HTTP_PORT` / `BLAZINGSUN_DB_PORT` in a `.env` file.
+Ports bind to `127.0.0.1` only (nginx `127.0.0.1:80`, MySQL `127.0.0.1:3307`), so the stack runs alongside the other local sites, which use their own `127.0.0.x` addresses. To change the ports, set `BLAZINGSUN_HTTP_PORT` / `BLAZINGSUN_DB_PORT` in `.env`.
+
+### Opening it from another PC on the LAN
+
+The shared reverse proxy (`../reverse-proxy`, the same one the rgbc sites use) serves **https://blazingsun.local** on this machine's LAN address `192.168.0.109:443`. It has its own `server` block and mkcert certificate (`certs/blazingsun.pem`), and forwards to `127.0.0.1:80`. The stack has to be running (`npm run docker:up`).
+
+On the other PC:
+
+1. Add to its hosts file (`/etc/hosts`, or `C:\Windows\System32\drivers\etc\hosts` on Windows): `192.168.0.109 blazingsun.local`
+2. Trust this machine's mkcert CA, once (`$(mkcert -CAROOT)/rootCA.pem`). Skip this if that PC already opens the rgbc sites without a certificate warning.
+3. Open https://blazingsun.local
+
+macOS resolves `.local` names through Bonjour first, so the first load can take a few seconds there.
 
 ### Two ways to work locally
 
-- **Hot-reload frontend:** `npm run dev` (Vite on :5173). Vite forwards `/api` to nginx on :8080, so the visit counter works too.
-- **Production-like:** `npm run build`, then open http://127.0.0.1:8080. nginx serves the built `dist/`, just like Hostinger.
+- **Hot-reload frontend:** `npm run dev` (Vite on :5173). Vite forwards `/api` to nginx on port 80, so the visit counter works too.
+- **Production-like:** `npm run build`, then open http://blazingsun.local. nginx serves the built `dist/`, just like Hostinger.
 
 ### Everyday Docker commands
 
@@ -113,6 +125,7 @@ docker compose down -v     # stop AND delete the database volume (fresh start)
 | `npm test` | Frontend unit tests (`node:test`) |
 | `npm run test:e2e` | Playwright E2E against `dist/` (run `build` first) |
 | `npm run check` | Frontend lint, unit, build, E2E |
+| `npm run images` | Regenerate responsive WebP/PNG/GIF variants from `images-src/` |
 | `npm run deploy` | `check`, then deploy from your machine (needs `.env`) |
 | `npm run docker:up` / `docker:down` / `docker:logs` | Local stack |
 | `npm run db:migrate` | Run migrations on the local stack |
@@ -150,7 +163,8 @@ blazing_sun/
 │   │   └── PreferenceStore.js    Safe localStorage wrapper
 │   └── scss/                     _tokens (all colours as CSS variables), _base, _sky, _glass,
 │                                 _header, _hero, _sections, _footer → main.scss
-├── public/                       Copied unchanged to the web root: sw.js, manifest.json, favicon, images/
+├── public/                       Copied unchanged to the web root: sw.js, manifest.json, favicon, fonts/, images/responsive/
+├── images-src/                   Original images (not deployed); `npm run images` generates the responsive variants
 │
 ├── server/                       PHP 8.5 API (deployed to public_html/api/)
 │   ├── public/
@@ -205,6 +219,14 @@ blazing_sun/
 **Translations.** Translatable elements in `index.html` carry `data-i18n="key"`, or `data-i18n-html` when the text contains `<em>`/`<b>`. `src/js/translations.js` holds the same keys for en, sr and fr.
 
 **Offline.** `public/sw.js` serves pages network-first and assets stale-while-revalidate. At build time its cache version is stamped as `<version>-<commit>`, so every deploy refreshes returning visitors' caches. API calls are `POST`, which the service worker never caches.
+
+### Responsive images and fonts
+
+- **Images:** the sun/moon orb, the header logo, the theme toggle and the flags are all `<picture>` elements: a WebP `<source>` plus a PNG/GIF fallback `<img>`, each with a `srcset` of several widths and a `sizes` hint, so the browser downloads only the file that fits the slot. The sun stays animated as WebP (1.3 MB at full size instead of the 3.9 MB GIF), and a 24px icon loads a 0.7–47 KB file instead of the full image.
+  - Originals live in `images-src/` and are not deployed. The widths per image are defined once in `src/js/imageSets.js`, which the page, the theme/language switchers, the generator and the tests all share.
+  - After changing a source image, run `npm run images` (uses `sharp`, dev-only) to regenerate `public/images/responsive/`, and commit the result.
+- **Fonts:** self-hosted WOFF2 files in `public/fonts/`: *JetBrains Mono* (labels, dates, tech lists) and *Instrument Serif* italic (the quote and *digital* in the hero). Both are under the SIL Open Font License; the license texts sit next to the files. Latin-ext files load only when characters like č, ć, š, ž or đ appear.
+- **Glass:** one style for every card, the header, the footer and the language menu: `--glass-*` tokens in `_tokens.scss`, very transparent (4–6%) with a 6px blur. Cards add a light-catching gradient edge, a cursor spotlight (`GlassSpotlight.js`), corner ticks on hover and a staggered rise-in (`Reveal.js`; off with reduced motion).
 
 ### Checking the visit counter
 
@@ -505,7 +527,7 @@ Edit `src/scss/_tokens.scss` only.
 | Problem | Fix |
 |---|---|
 | `npm run dev`: visit counter warning `[VisitCounter] could not record visit` | Start Docker (`npm run docker:up`) and run `npm run db:migrate` |
-| `http://127.0.0.1:8080` shows nginx 404 / old site | Run `npm run build`; nginx serves `dist/` |
+| `http://blazingsun.local` shows nginx 404 / old site | Run `npm run build`; nginx serves `dist/` |
 | API returns `503 Service unavailable` | `config.php` missing or incomplete: check the secrets, or `docker/php/config.local.php` locally |
 | API returns `500` | Read the PHP error log (`npm run docker:logs` locally; hPanel → Error logs in production) |
 | `composer test:integration` skips everything | `TEST_DB_*` isn't set. Run it inside Docker (`npm run test:php`) |
