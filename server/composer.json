@@ -1,0 +1,37 @@
+{
+    "name": "blazingsun/api",
+    "description": "PHP API for blazingsun.space (page visit counter).",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.5",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-json": "*",
+        "ext-uri": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.4",
+        "phpstan/phpstan": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "BlazingSun\\Api\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BlazingSun\\Api\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "lint": "find public src routes config migrations tests -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null && echo 'php -l: no syntax errors'",
+        "analyse": "phpstan analyse --no-progress",
+        "test:unit": "phpunit --testsuite unit",
+        "test:integration": "phpunit --testsuite integration",
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

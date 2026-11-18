@@ -1,0 +1,39 @@
+{
+  "name": "blazing-sun",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio site of Milorad Đuković — blazingsun.space",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && ./scripts/build-api.sh",
+    "preview": "vite preview",
+    "test": "node --test \"tests/unit/**/*.test.js\"",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:html",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint \"src/**/*.scss\"",
+    "lint:html": "html-validate index.html",
+    "check": "npm run lint && npm test && npm run build && npm run test:e2e",
+    "deploy": "npm run check && ./scripts/deploy.sh",
+    "test:e2e": "playwright test",
+    "docker:up": "docker compose up -d --build --wait",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "db:migrate": "curl -fsS -X POST -H 'Authorization: Bearer local-dev-token' http://127.0.0.1:${BLAZINGSUN_HTTP_PORT:-8080}/api/migrations && echo",
+    "test:php": "docker compose exec php composer test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.65.1",
+    "eslint": "^9.39.5",
+    "globals": "^17.14.0",
+    "html-validate": "^11.21.1",
+    "sass-embedded": "^1.108.2",
+    "stylelint": "^17.16.0",
+    "stylelint-config-standard-scss": "^17.0.0",
+    "vite": "^6.4.6"
+  }
+}

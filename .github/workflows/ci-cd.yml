@@ -1,0 +1,375 @@
+name: CI/CD
+
+# Pull request into master, push or merge to master  → tests only (lint, unit, PHP API, build, E2E). Never deploys.
+# Push a release tag vX.Y.Z                          → the same tests, then 🏷️ Release check, then 🚀 Deploy.
+#   Release check: tag == "v" + package.json version, higher than every earlier release, commit already on master.
+# Manual run (Actions → Run workflow): on a branch = tests only; on a tag = tests + redeploy of that release.
+run-name: >-
+  ${{ startsWith(github.ref, 'refs/tags/')
+      && format('🚀 Release {0}', github.ref_name)
+      || github.event_name == 'pull_request'
+      && format('🔎 PR #{0}: {1}', github.event.pull_request.number, github.event.pull_request.title)
+      || github.event_name == 'workflow_dispatch'
+      && format('🔁 Manual checks on {0} by {1}', github.ref_name, github.actor)
+      || format('✅ {0}: {1}', github.ref_name, github.event.head_commit.message) }}
+
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  # Cancel superseded PR runs; never cancel a running deploy on master.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash # implies `-eo pipefail`, so `cmd | tee log` still fails when cmd fails
+
+env:
+  NODE_VERSION: 22
+  FORCE_COLOR: 1
+
+jobs:
+  lint:
+    name: 🔍 Lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        id: install
+        run: npm ci
+
+      - name: ESLint (JavaScript)
+        id: eslint
+        run: npx eslint . --max-warnings 0 | tee eslint.ci.log
+
+      - name: Stylelint (SCSS)
+        id: stylelint
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npx stylelint "src/**/*.scss" | tee stylelint.ci.log
+
+      - name: html-validate (HTML)
+        id: htmlvalidate
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npx html-validate index.html | tee htmlvalidate.ci.log
+
+      - name: Summary
+        if: ${{ !cancelled() }}
+        run: |
+          echo "## 🔍 Lint" >> "$GITHUB_STEP_SUMMARY"
+          scripts/ci/summary.sh "ESLint" "${{ steps.eslint.outcome }}" eslint.ci.log
+          scripts/ci/summary.sh "Stylelint" "${{ steps.stylelint.outcome }}" stylelint.ci.log
+          scripts/ci/summary.sh "html-validate" "${{ steps.htmlvalidate.outcome }}" htmlvalidate.ci.log
+
+  unit:
+    name: 🧪 Unit tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run unit tests (with coverage)
+        id: unit
+        run: node --test --test-reporter=spec --experimental-test-coverage "tests/unit/**/*.test.js" | tee unit.ci.log
+
+      - name: Release-rules tests (check-release.sh)
+        id: release-rules
+        if: ${{ !cancelled() }}
+        run: tests/ci/check-release.test.sh | tee release-rules.ci.log
+
+      - name: Summary
+        if: ${{ !cancelled() }}
+        run: |
+          echo "## 🧪 Unit tests" >> "$GITHUB_STEP_SUMMARY"
+          scripts/ci/summary.sh "node:test" "${{ steps.unit.outcome }}" unit.ci.log
+          scripts/ci/summary.sh "Release rules" "${{ steps.release-rules.outcome }}" release-rules.ci.log
+
+  php:
+    name: 🐘 PHP API
+    runs-on: ubuntu-24.04
+    services:
+      mysql:
+        image: mysql:26.10 # same as docker-compose.yml
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: blazingsun_test
+          MYSQL_USER: blazingsun
+          MYSQL_PASSWORD: blazingsun
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: "3306"
+      DB_NAME: blazingsun_test
+      DB_USER: blazingsun
+      DB_PASSWORD: blazingsun
+      TEST_DB_HOST: 127.0.0.1
+      TEST_DB_PORT: "3306"
+      TEST_DB_NAME: blazingsun_test
+      TEST_DB_USER: blazingsun
+      TEST_DB_PASSWORD: blazingsun
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          extensions: pdo_mysql
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies
+        id: install
+        run: composer install --no-interaction --no-progress
+
+      - name: php -l (syntax)
+        id: syntax
+        run: composer lint | tee ../php-syntax.ci.log
+
+      - name: PHPStan (level 8)
+        id: phpstan
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: vendor/bin/phpstan analyse --no-progress --error-format=github | tee ../phpstan.ci.log
+
+      - name: PHPUnit — unit
+        id: unit
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: vendor/bin/phpunit --testsuite unit --colors=never | tee ../php-unit.ci.log
+
+      # Runs first, on the fresh database: it expects the counter to start at 0.
+      - name: API smoke test (php -S + MySQL over HTTP)
+        id: smoke
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        working-directory: .
+        run: scripts/ci/api-smoke-test.sh | tee php-smoke.ci.log
+
+      - name: PHPUnit — integration (MySQL)
+        id: integration
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: vendor/bin/phpunit --testsuite integration --colors=never | tee ../php-integration.ci.log
+
+      - name: Validate docker-compose.yml
+        id: compose
+        if: ${{ !cancelled() }}
+        working-directory: .
+        run: docker compose config --quiet && echo "docker-compose.yml is valid" | tee compose.ci.log
+
+      - name: Summary
+        if: ${{ !cancelled() }}
+        working-directory: .
+        run: |
+          echo "## 🐘 PHP API (PHP $(php -r 'echo PHP_VERSION;'), MySQL 26.10)" >> "$GITHUB_STEP_SUMMARY"
+          scripts/ci/summary.sh "php -l" "${{ steps.syntax.outcome }}" php-syntax.ci.log
+          scripts/ci/summary.sh "PHPStan (level 8)" "${{ steps.phpstan.outcome }}" phpstan.ci.log
+          scripts/ci/summary.sh "PHPUnit — unit" "${{ steps.unit.outcome }}" php-unit.ci.log
+          scripts/ci/summary.sh "API smoke test" "${{ steps.smoke.outcome }}" php-smoke.ci.log
+          scripts/ci/summary.sh "PHPUnit — integration" "${{ steps.integration.outcome }}" php-integration.ci.log
+          scripts/ci/summary.sh "docker-compose.yml" "${{ steps.compose.outcome }}" compose.ci.log
+
+  build:
+    name: 📦 Build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Vite production build
+        run: npm run build
+
+      - name: Verify service worker cache version is stamped
+        run: |
+          stamped=$(grep -o "CACHE_VERSION = '[^']*'" dist/sw.js)
+          echo "$stamped"
+          [[ "$stamped" == *"-${GITHUB_SHA:0:7}'" ]] || { echo "::error file=public/sw.js::CACHE_VERSION was not stamped with this commit"; exit 1; }
+
+      - name: Summary
+        if: ${{ !cancelled() }}
+        run: |
+          {
+            echo "## 📦 Build"
+            echo "| File | Size |"
+            echo "|---|---|"
+            find dist -type f -printf '%P\t%s\n' | sort | while IFS=$'\t' read -r path bytes; do
+              echo "| \`$path\` | $(numfmt --to=iec --suffix=B "$bytes") |"
+            done
+            echo
+            echo "**Total:** $(du -sh dist | cut -f1)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # The exact files that pass E2E are the ones that get deployed.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+          if-no-files-found: error
+          # Hidden files are skipped by default, which silently dropped api/.htaccess (the /api router).
+          include-hidden-files: true
+
+  e2e:
+    name: 🎭 E2E (Playwright)
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - name: Read Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: browser-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Chromium
+        if: steps.browser-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Chromium system dependencies
+        if: steps.browser-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Run E2E tests (desktop + mobile)
+        id: e2e
+        run: npx playwright test | tee e2e.ci.log
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+      - name: Summary
+        if: ${{ !cancelled() }}
+        run: |
+          echo "## 🎭 E2E" >> "$GITHUB_STEP_SUMMARY"
+          scripts/ci/summary.sh "Playwright (desktop + mobile)" "${{ steps.e2e.outcome }}" e2e.ci.log
+          echo "Full HTML report: **playwright-report** artifact on this run." >> "$GITHUB_STEP_SUMMARY"
+
+  release:
+    name: 🏷️ Release check
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # all tags and master, to compare versions and write release notes
+
+      - name: Validate tag (version bump, on master)
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          MAIN_BRANCH_REF: origin/master
+        run: scripts/ci/check-release.sh
+
+  deploy:
+    name: 🚀 Deploy to blazingsun.space
+    needs: [lint, unit, php, e2e, release]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-24.04
+    environment:
+      name: production
+      url: https://blazingsun.space/
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: What is being deployed
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          line="Deploying $RELEASE_TAG (commit ${GITHUB_SHA:0:7}, by @$ACTOR)"
+          echo "$line"
+          echo "## 🚀 $line" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - name: Upload over FTPS, migrate database, check API health
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MIGRATION_TOKEN: ${{ secrets.MIGRATION_TOKEN }}
+        run: ./scripts/deploy.sh
+
+      - name: Smoke test live site
+        run: |
+          expected=$(grep -o "CACHE_VERSION = '[^']*'" dist/sw.js)
+          status=$(curl -s -o live-sw.js -w '%{http_code}' --retry 3 --retry-delay 5 "https://blazingsun.space/sw.js?ci=$GITHUB_RUN_ID")
+          if [[ "$status" != "200" ]]; then
+            echo "::warning title=Smoke test skipped::blazingsun.space returned HTTP $status (likely the host's bot protection); could not verify the live files."
+            exit 0
+          fi
+          if grep -qF "$expected" live-sw.js; then
+            echo "Live site serves this build: $expected"
+            echo "### ✅ Live site serves \`$expected\`" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error title=Smoke test failed::Live sw.js does not contain $expected (CDN cache or failed upload?)"
+            exit 1
+          fi

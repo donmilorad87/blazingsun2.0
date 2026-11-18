@@ -1,0 +1,16 @@
+# Every request under /api goes to index.php. Nothing else here (config, src, migrations) is reachable directly.
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	# Pass the Authorization header through to PHP (needed for the migrations endpoint).
+	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+	RewriteRule ^index\.php$ - [L]
+	RewriteRule ^ index.php [L]
+</IfModule>
+
+# If mod_rewrite is missing, at least never serve config or source files.
+<FilesMatch "\.(sql|neon|json|lock|md|xml|dist)$">
+	Require all denied
+</FilesMatch>

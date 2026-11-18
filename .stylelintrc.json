@@ -1,0 +1,11 @@
+{
+  "extends": "stylelint-config-standard-scss",
+  "rules": {
+    "selector-id-pattern": null,
+    "no-descending-specificity": null,
+    "selector-class-pattern": [
+      "^[a-z][a-z0-9]*(-[a-z0-9]+)*(__[a-z0-9]+(-[a-z0-9]+)*)?(--[a-z0-9]+(-[a-z0-9]+)*)?$|^is-[a-z]+$|^light$",
+      { "message": "Use BEM: block__element--modifier" }
+    ]
+  }
+}

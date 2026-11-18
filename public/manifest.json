@@ -1,0 +1,22 @@
+{
+  "name": "Blazing Sun | Milorad Đuković",
+  "short_name": "Blazing Sun",
+  "description": "Portfolio of Milorad Đuković, Senior Full Stack Web Engineer and AI engineer.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07080c",
+  "theme_color": "#07080c",
+  "categories": ["portfolio", "business", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "426x426",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

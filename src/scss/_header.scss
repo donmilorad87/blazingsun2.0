@@ -1,0 +1,150 @@
+@use "tokens" as *;
+@use "glass" as *;
+
+.site-header {
+	@include glass;
+
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	background: var(--glass-bar-bg);
+	border-top-color: rgb(255 255 255 / 10%);
+}
+
+.site-nav {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 76px;
+
+	&__links {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		display: flex;
+		gap: 23px;
+		color: var(--nav-link);
+		font-size: 0.9rem;
+		font-weight: 750;
+		white-space: nowrap;
+		transform: translate(-50%, -50%);
+
+		a:hover {
+			color: var(--nav-link-hover);
+		}
+
+		@media (max-width: $breakpoint-tablet) {
+			display: none;
+		}
+	}
+
+	&__controls {
+		display: flex;
+		gap: 8px;
+	}
+}
+
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+	font-size: 0.82rem;
+	font-weight: 900;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+
+	&__logo {
+		display: block;
+		width: 45px;
+		height: 45px;
+		object-fit: contain;
+		filter: var(--logo-filter);
+		mix-blend-mode: var(--logo-blend);
+		transform: scale(var(--logo-scale));
+	}
+}
+
+.control {
+	@include glass;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	border-radius: 9px;
+	background: var(--control-bg);
+	color: var(--text);
+	cursor: pointer;
+
+	&:hover {
+		background: var(--control-hover-bg);
+		border-color: var(--control-hover-border);
+		box-shadow: var(--control-hover-shadow);
+	}
+
+	img {
+		width: 24px;
+		height: 24px;
+		object-fit: contain;
+	}
+}
+
+.lang-picker {
+	position: relative;
+	z-index: 31;
+
+	&__current {
+		border-radius: 8px;
+	}
+
+	&__menu {
+		position: absolute;
+		top: 36px;
+		right: 0;
+		display: grid;
+		gap: 3px;
+		min-width: 132px;
+		padding: 4px;
+		overflow: hidden;
+		background: var(--menu-bg);
+		border: 1px solid var(--glass-border);
+		border-radius: 10px;
+		box-shadow: var(--menu-shadow);
+		backdrop-filter: blur(6px) saturate(150%);
+
+		&[hidden] {
+			display: none;
+		}
+
+		button {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			min-height: 30px;
+			padding: 6px 8px;
+			border: 0;
+			border-radius: 7px;
+			background: transparent;
+			color: var(--text);
+			font: 600 0.82rem system-ui, sans-serif;
+			text-align: left;
+			cursor: pointer;
+
+			&:hover,
+			&.is-active {
+				background: var(--menu-hover-bg);
+			}
+		}
+	}
+}
+
+.flag {
+	display: block;
+	flex: none;
+	width: 22px;
+	height: 15px;
+	object-fit: contain;
+}

@@ -1,0 +1,123 @@
+@use "tokens" as *;
+
+.hero {
+	position: relative;
+	min-height: 850px;
+	padding: 155px 0 100px;
+	overflow: hidden;
+	isolation: isolate;
+
+	&__grid {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 55px;
+		align-items: center;
+	}
+
+	h1 {
+		margin: 20px 0 25px;
+		font-size: clamp(3.6rem, 8vw, 7.8rem);
+		line-height: 0.86;
+		letter-spacing: -0.095em;
+
+		em {
+			color: var(--gold);
+			font-style: normal;
+		}
+	}
+
+	&__lead {
+		max-width: 620px;
+		color: var(--lead);
+		font-size: 1.18rem;
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 32px;
+	}
+
+	&__available {
+		margin-top: 26px;
+		color: var(--muted);
+		font-size: 0.9rem;
+
+		i {
+			display: inline-block;
+			width: 9px;
+			height: 9px;
+			margin-right: 8px;
+			border-radius: 50%;
+			background: #aaff58;
+			box-shadow: 0 0 16px #aaff58;
+		}
+	}
+
+	// Empty column that keeps the layout balanced and glows behind the fixed orb.
+	&__glow {
+		position: relative;
+		display: grid;
+		place-items: center;
+		min-height: 500px;
+
+		&::after {
+			content: "";
+			position: absolute;
+			width: 300px;
+			height: 300px;
+			border-radius: 50%;
+			background: var(--hero-glow);
+			filter: blur(65px);
+		}
+	}
+
+	@media (max-width: $breakpoint-tablet) {
+		min-height: unset;
+		padding-top: 135px;
+
+		&__grid {
+			grid-template-columns: 1fr;
+			gap: 35px;
+		}
+
+		&__glow {
+			order: -1;
+			min-height: 370px;
+		}
+	}
+}
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 50px;
+	padding: 0 20px;
+	border: 1px solid var(--line);
+	border-radius: 12px;
+	font-weight: 850;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+	&--primary {
+		background: var(--btn-primary-bg);
+		border-color: var(--btn-primary-border);
+		box-shadow: 0 0 22px rgb(255 188 50 / 16%), inset 0 1px 0 rgb(255 255 255 / 18%);
+		color: var(--btn-primary-text);
+	}
+
+	&--ghost {
+		background: var(--tinted-bg);
+		border-color: var(--tinted-border);
+		box-shadow: var(--btn-ghost-shadow);
+		backdrop-filter: blur(18px) saturate(155%);
+	}
+
+	&:hover {
+		border-color: var(--btn-hover-border);
+		box-shadow: var(--btn-hover-shadow);
+	}
+}
