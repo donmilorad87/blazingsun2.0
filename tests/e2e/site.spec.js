@@ -25,6 +25,15 @@ test( 'renders the hero and every section', async ( { page } ) => {
 	}
 } );
 
+test( 'Person schema has a photo that is served from the site', async ( { page, request } ) => {
+	const schema = JSON.parse( await page.locator( 'script[type="application/ld+json"]' ).textContent() );
+	const person = schema[ '@graph' ].find( ( node ) => node[ '@type' ] === 'Person' );
+	expect( person.image ).toBe( 'https://blazingsun.space/images/milorad-djukovic.jpg' );
+	const response = await request.get( new URL( person.image ).pathname );
+	expect( response.ok() ).toBe( true );
+	expect( response.headers()[ 'content-type' ] ).toContain( 'image/jpeg' );
+} );
+
 test( 'every image loads', async ( { page } ) => {
 	await page.waitForLoadState( 'load' );
 	const broken = await page.locator( 'img' ).evaluateAll(
