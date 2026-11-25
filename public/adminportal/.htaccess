@@ -1,0 +1,5 @@
+# The admin portal is never indexed, and its shell is always revalidated (the JS/CSS it loads are content-hashed).
+<IfModule mod_headers.c>
+	Header set X-Robots-Tag "noindex, nofollow"
+	Header set Cache-Control "no-cache"
+</IfModule>

@@ -1,34 +1,16 @@
-import { DEFAULT_LANGUAGE, LANGUAGES } from './translations.js';
-import { Translator } from './Translator.js';
-import { PreferenceStore } from './PreferenceStore.js';
-import { IMAGE_SETS } from './imageSets.js';
-import { ResponsivePicture } from './ResponsivePicture.js';
-
-const FLAGS = { sr: IMAGE_SETS.flagRs, en: IMAGE_SETS.flagGb, fr: IMAGE_SETS.flagFr };
-
-const STORAGE_KEY = 'blazing-language';
-
-/** Flag dropdown in the header that switches the page language. */
+/**
+ * Flag dropdown in the header. Each language has its own URL (/, /sr/, …), so the options are plain links
+ * rendered by PHP; this only opens and closes the menu.
+ */
 export class LanguagePicker {
-	constructor( container, translator = new Translator(), preferences = new PreferenceStore() ) {
+	constructor( container ) {
 		this.container = container;
-		this.translator = translator;
-		this.preferences = preferences;
 		this.current = container.querySelector( '.lang-picker__current' );
 		this.menu = container.querySelector( '.lang-picker__menu' );
-		this.options = [ ...this.menu.querySelectorAll( 'button[data-lang]' ) ];
 	}
 
 	init() {
-		const saved = this.preferences.read( STORAGE_KEY );
-		const lang = Translator.isSupported( saved ) ? saved : DEFAULT_LANGUAGE;
-		if ( lang !== DEFAULT_LANGUAGE ) {
-			this.translator.apply( lang );
-		}
-		this.markActive( lang );
-
 		this.current.addEventListener( 'click', () => this.setOpen( this.menu.hidden ) );
-		this.options.forEach( ( option ) => option.addEventListener( 'click', () => this.select( option.dataset.lang ) ) );
 		document.addEventListener( 'click', ( event ) => {
 			if ( ! this.container.contains( event.target ) ) {
 				this.setOpen( false );
@@ -45,24 +27,5 @@ export class LanguagePicker {
 	setOpen( isOpen ) {
 		this.menu.hidden = ! isOpen;
 		this.current.setAttribute( 'aria-expanded', String( isOpen ) );
-	}
-
-	select( lang ) {
-		this.translator.apply( lang );
-		this.preferences.write( STORAGE_KEY, lang );
-		this.markActive( lang );
-		this.setOpen( false );
-	}
-
-	markActive( lang ) {
-		this.options.forEach( ( option ) => {
-			const isActive = option.dataset.lang === lang;
-			option.classList.toggle( 'is-active', isActive );
-			option.toggleAttribute( 'aria-current', isActive );
-			if ( isActive ) {
-				ResponsivePicture.show( this.current.querySelector( 'picture' ), FLAGS[ lang ] );
-			}
-		} );
-		this.current.setAttribute( 'aria-label', LANGUAGES[ lang ] );
 	}
 }

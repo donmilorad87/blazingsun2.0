@@ -7,7 +7,8 @@ test.beforeEach( async ( { page } ) => {
 
 const chooseLanguage = async ( page, name ) => {
 	await page.locator( '.lang-picker__current' ).click();
-	await page.getByRole( 'button', { name } ).click();
+	await page.getByRole( 'link', { name } ).click();
+	await page.waitForLoadState( 'domcontentloaded' );
 };
 
 test( 'the expanded CV section is translated (Serbian and French)', async ( { page } ) => {

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="robots" content="noindex, nofollow">
+	<meta name="color-scheme" content="dark light">
+	<title>Admin portal | Blazing Sun</title>
+	<link rel="icon" type="image/png" href="/favicon.png">
+	<script type="module" src="/src/admin/main.js"></script>
+</head>
+<body class="admin">
+	<a class="skip-link" href="#admin-main">Skip to content</a>
+	<header class="admin__header">
+		<p class="admin__brand">Blazing Sun <span>Admin portal</span></p>
+		<div class="admin__header-actions">
+			<a class="btn btn--small" href="/" target="_blank" rel="noopener">View site ↗</a>
+			<button class="btn btn--small" type="button" data-logout hidden>Log out</button>
+		</div>
+	</header>
+	<div class="admin__layout">
+		<nav class="admin__nav" aria-label="Sections" hidden>
+			<ul></ul>
+		</nav>
+		<main id="admin-main" class="admin__main" tabindex="-1">
+			<p class="form__status">Loading…</p>
+		</main>
+	</div>
+	<div class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

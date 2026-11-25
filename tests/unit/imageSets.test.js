@@ -1,10 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { IMAGE_SETS, srcset } from '../../src/js/imageSets.js';
+import { IMAGE_SETS, srcset, widthsFor } from '../../src/js/imageSets.js';
 
 const publicPath = ( url ) => new URL( `../../public${ url }`, import.meta.url );
-const html = readFileSync( new URL( '../../index.html', import.meta.url ), 'utf8' );
+const seed = JSON.parse( readFileSync( new URL( '../../server/content/seed.json', import.meta.url ), 'utf8' ) );
 
 test( 'every responsive file listed in imageSets.js exists in public/', () => {
 	const missing = Object.values( IMAGE_SETS ).flatMap( ( set ) => [ set.webp, set.fallback ].flatMap( ( format ) =>
@@ -27,8 +27,10 @@ test( 'srcset lists one candidate per width with a w descriptor', () => {
 	);
 } );
 
-test( 'index.html uses exactly the srcsets from imageSets.js (no hand-written drift)', () => {
+test( 'the CMS seed lists exactly the generated variants of every image set (no hand-written drift)', () => {
 	for ( const set of Object.values( IMAGE_SETS ) ) {
-		assert.ok( html.includes( `srcset="${ srcset( set, set.webp ) }"` ), `${ set.name } srcset in index.html` );
+		const media = seed.media.find( ( entry ) => entry.path === `/images/responsive/${ set.name }` );
+		assert.ok( media, `${ set.name } is in server/content/seed.json` );
+		assert.deepEqual( media.variants, { webp: set.widths, fallback: set.fallback, fallbackWidths: widthsFor( set, set.fallback ) }, set.name );
 	}
 } );

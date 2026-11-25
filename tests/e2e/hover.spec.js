@@ -54,7 +54,7 @@ test( 'nav items get the glass look on hover without moving or changing border c
 
 test( 'language menu items get the same glass hover, without moving', async ( { page } ) => {
 	await page.locator( '.lang-picker__current' ).click();
-	const item = page.getByRole( 'button', { name: 'Français' } );
+	const item = page.getByRole( 'link', { name: 'Français' } );
 	const before = await look( item );
 	const after = await hovered( page, item );
 
@@ -82,7 +82,7 @@ test( 'all three hover states use the same glass', async ( { page, isMobile } ) 
 	const nav = await hovered( page, page.locator( '.site-nav__links a' ).first() );
 	const ghost = await hovered( page, page.locator( '.hero .btn--ghost' ) );
 	await page.locator( '.lang-picker__current' ).click();
-	const item = await hovered( page, page.getByRole( 'button', { name: 'Srpski' } ) );
+	const item = await hovered( page, page.getByRole( 'link', { name: 'Srpski' } ) );
 
 	for ( const state of [ ghost, item ] ) {
 		expect( state.background ).toBe( nav.background );
@@ -102,18 +102,18 @@ test( 'hover only adds background and border: the nav text colour stays the same
 
 test( 'language dropdown: hovered and active items have the same rounded shape as the nav hover', async ( { page, isMobile } ) => {
 	await page.locator( '.lang-picker__current' ).click();
-	const item = page.getByRole( 'button', { name: 'Français' } );
+	const item = page.getByRole( 'link', { name: 'Français' } );
 	await item.hover();
 	await page.waitForTimeout( 450 );
 	const radius = ( locator ) => locator.evaluate( ( el ) => getComputedStyle( el ).borderRadius );
 	const hovered = await radius( item );
-	expect( await radius( page.locator( '.lang-picker__menu button.is-active' ) ) ).toBe( hovered );
+	expect( await radius( page.locator( '.lang-picker__menu a.is-active' ) ) ).toBe( hovered );
 	if ( ! isMobile ) {
 		expect( await radius( page.locator( '.site-nav__links a' ).first() ) ).toBe( hovered );
 	}
 	// The dropdown's corners are concentric with its pill rows: item radius (half the row height) + padding.
 	const geometry = await page.locator( '.lang-picker__menu' ).evaluate( ( menu ) => {
-		const row = menu.querySelector( 'button' ).getBoundingClientRect().height;
+		const row = menu.querySelector( 'a' ).getBoundingClientRect().height;
 		const style = getComputedStyle( menu );
 		return { menuRadius: parseFloat( style.borderRadius ), expected: ( row / 2 ) + parseFloat( style.paddingTop ) };
 	} );

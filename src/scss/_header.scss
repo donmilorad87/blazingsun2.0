@@ -130,7 +130,7 @@
 			display: none;
 		}
 
-		button {
+		a {
 			@include glass-hover;
 
 			display: flex;
@@ -142,8 +142,7 @@
 			background-color: transparent;
 			color: var(--text);
 			font: 600 0.82rem system-ui, sans-serif;
-			text-align: left;
-			cursor: pointer;
+			text-decoration: none;
 
 			&.is-active {
 				@include glass-hover-state;

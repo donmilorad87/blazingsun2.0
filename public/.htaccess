@@ -1,0 +1,26 @@
+# Production (Hostinger, Apache/LiteSpeed): routes the page to PHP and protects uploads.
+# / and /{iso2}/ are rendered by api/page.php (cached on disk); /api/* is handled by api/.htaccess.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	# Deploy maintenance window: scripts/deploy.sh creates .maintenance before uploading and deletes it afterwards.
+	# /api stays reachable for the deploy's migrations and health check. Rewrite rules are not inherited by
+	# sub-folders with their own RewriteEngine (talkila/), so other sites in public_html are never affected.
+	RewriteCond %{DOCUMENT_ROOT}/.maintenance -f
+	RewriteCond %{REQUEST_URI} !^/(api/|maintenance\.php$)
+	RewriteRule ^ maintenance.php [L]
+
+	RewriteRule ^adminportal$ /adminportal/ [R=301,L]
+	RewriteRule ^(?:[a-z]{2}/?)?$ api/page.php [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+	<Files "sw.js">
+		Header set Cache-Control "no-cache"
+	</Files>
+	<Files "asset-manifest.json">
+		Header set Cache-Control "no-cache"
+	</Files>
+</IfModule>

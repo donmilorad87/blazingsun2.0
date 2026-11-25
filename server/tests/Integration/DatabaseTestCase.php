@@ -31,11 +31,26 @@ abstract class DatabaseTestCase extends TestCase
             'migration_token' => '',
         ]));
 
-        $pdo = $this->connection->pdo;
-        $pdo->exec('DROP PROCEDURE IF EXISTS sp_page_visit_record');
-        $pdo->exec('DROP PROCEDURE IF EXISTS sp_page_visit_total');
-        $pdo->exec('DROP TABLE IF EXISTS page_visits');
+        $this->dropEverything();
         $this->migrator()->run();
+    }
+
+    /** The test database is disposable: every test starts from an empty schema. */
+    private function dropEverything(): void
+    {
+        $pdo = $this->connection->pdo;
+        $routines = $pdo->query('SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE()');
+        $tables = $pdo->query('SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()');
+        self::assertNotFalse($routines);
+        self::assertNotFalse($tables);
+        $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+        foreach ($routines->fetchAll(\PDO::FETCH_COLUMN) as $routine) {
+            $pdo->exec("DROP PROCEDURE IF EXISTS `$routine`");
+        }
+        foreach ($tables->fetchAll(\PDO::FETCH_COLUMN) as $table) {
+            $pdo->exec("DROP TABLE IF EXISTS `$table`");
+        }
+        $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
     }
 
     protected function migrator(): SqlMigrationRunner

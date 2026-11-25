@@ -56,6 +56,7 @@ test( 'the progress ring fills as you scroll', async ( { page } ) => {
 test( 'label is translated', async ( { page } ) => {
 	await expect( button( page ) ).toHaveAttribute( 'aria-label', 'Back to top' );
 	await page.locator( '.lang-picker__current' ).click();
-	await page.getByRole( 'button', { name: 'Srpski' } ).click();
+	await page.getByRole( 'link', { name: 'Srpski' } ).click();
+	await expect( page ).toHaveURL( /\/sr\/$/ );
 	await expect( button( page ) ).toHaveAttribute( 'aria-label', 'Nazad na vrh' );
 } );

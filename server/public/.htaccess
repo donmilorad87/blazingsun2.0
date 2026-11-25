@@ -1,4 +1,4 @@
-# Every request under /api goes to index.php. Nothing else here (config, src, migrations) is reachable directly.
+# Every request under /api goes to index.php. Nothing else here (config, src, migrations, storage) is reachable directly.
 Options -Indexes
 DirectoryIndex index.php
 
@@ -7,6 +7,8 @@ DirectoryIndex index.php
 	# Pass the Authorization header through to PHP (needed for the migrations endpoint).
 	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 	RewriteRule ^index\.php$ - [L]
+	# The public page front controller (the root .htaccess rewrites / and /{iso2}/ here).
+	RewriteRule ^page\.php$ - [L]
 	RewriteRule ^ index.php [L]
 </IfModule>
 

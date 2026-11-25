@@ -72,4 +72,33 @@ final class ConfigTest extends TestCase
 
         self::assertSame('', Config::fromArray($values)->migrationToken());
     }
+
+    public function testOptionalSettingsHaveDefaults(): void
+    {
+        $config = Config::fromArray($this->validValues());
+
+        self::assertSame('https://blazingsun.space', $config->siteUrl());
+        self::assertSame('/srv/dist', $config->path('dist', '/srv/dist/'));
+        self::assertSame('', $config->adminUsername());
+    }
+
+    public function testReadsSiteUrlPathsAndAdmin(): void
+    {
+        $config = Config::fromArray([...$this->validValues(),
+            'site_url' => 'http://blazingsun.local/',
+            'paths' => ['uploads' => '/var/www/uploads/'],
+            'admin' => ['username' => 'admin', 'password_hash' => '$argon2id$x'],
+        ]);
+
+        self::assertSame('http://blazingsun.local', $config->siteUrl());
+        self::assertSame('/var/www/uploads', $config->path('uploads', '/other'));
+        self::assertSame('admin', $config->adminUsername());
+        self::assertSame('$argon2id$x', $config->adminPasswordHash());
+    }
+
+    public function testRejectsASiteUrlWithAPath(): void
+    {
+        $this->expectException(ConfigException::class);
+        (void) Config::fromArray([...$this->validValues(), 'site_url' => 'https://example.com/blog']);
+    }
 }

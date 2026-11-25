@@ -40,11 +40,12 @@ class OfflineCache {
 	async networkFirst( request ) {
 		try {
 			const response = await fetch( request );
-			this.store( '/', response );
+			this.store( request, response );
 			return response;
 		} catch ( error ) {
 			console.warn( '[OfflineCache] offline, serving cached page', error );
-			return caches.match( '/' );
+			// Each language has its own URL (/, /sr/, …); fall back to the main page if this one was never cached.
+			return ( await caches.match( request ) ) || caches.match( '/' );
 		}
 	}
 

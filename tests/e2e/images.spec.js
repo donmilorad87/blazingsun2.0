@@ -56,8 +56,9 @@ test( 'switching theme swaps every themed picture to the sun', async ( { page } 
 	}
 } );
 
-test( 'choosing a language swaps the current flag picture', async ( { page } ) => {
+test( 'each language page shows its own flag', async ( { page } ) => {
 	await page.locator( '.lang-picker__current' ).click();
-	await page.getByRole( 'button', { name: 'Français' } ).click();
+	await page.getByRole( 'link', { name: 'Français' } ).click();
+	await expect( page ).toHaveURL( /\/fr\/$/ );
 	await expect.poll( async () => ( await chosen( page, '.lang-picker__current img' ) ).currentSrc ).toMatch( /\/flag-fr-\d+\.webp$/ );
 } );

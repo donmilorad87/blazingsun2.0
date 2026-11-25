@@ -19,18 +19,18 @@ final class MigrationControllerTest extends TestCase
     public function testRunsMigrationsWithTheRightToken(): void
     {
         $runner = $this->runner();
-        $response = (new MigrationController($runner, 'good-token'))
+        $response = (new MigrationController($runner, 'good-token', static fn (): bool => true))
             ->run(new Request('POST', '/api/migrations', ['Authorization' => 'Bearer good-token']));
 
         self::assertSame(200, $response->status());
-        self::assertSame(['applied' => ['001_create_page_visits.sql']], $response->payload());
+        self::assertSame(['applied' => ['001_create_page_visits.sql'], 'seeded' => true], $response->payload());
         self::assertSame(1, $runner->runs);
     }
 
     public function testRejectsAWrongOrMissingToken(): void
     {
         $runner = $this->runner();
-        $controller = new MigrationController($runner, 'good-token');
+        $controller = new MigrationController($runner, 'good-token', static fn (): bool => true);
 
         self::assertSame(401, $controller->run(new Request('POST', '/', ['Authorization' => 'Bearer nope']))->status());
         self::assertSame(401, $controller->run(new Request('POST', '/'))->status());
@@ -40,7 +40,7 @@ final class MigrationControllerTest extends TestCase
     public function testEndpointIsHiddenWhenNoTokenIsConfigured(): void
     {
         $runner = $this->runner();
-        $response = (new MigrationController($runner, ''))
+        $response = (new MigrationController($runner, '', static fn (): bool => true))
             ->run(new Request('POST', '/', ['Authorization' => 'Bearer ']));
 
         self::assertSame(404, $response->status());

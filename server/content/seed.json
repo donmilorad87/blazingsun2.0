@@ -1,0 +1,916 @@
+{
+	"media": [
+		{
+			"key": "moon",
+			"kind": "raster",
+			"path": "/images/responsive/moon",
+			"variants": {
+				"webp": [
+					24,
+					48,
+					72,
+					90,
+					135,
+					240,
+					330,
+					426
+				],
+				"fallback": "png",
+				"fallbackWidths": [
+					24,
+					48,
+					72,
+					90,
+					135,
+					240,
+					330,
+					426
+				]
+			},
+			"width": 426,
+			"height": 426
+		},
+		{
+			"key": "sun",
+			"kind": "animated",
+			"path": "/images/responsive/sun",
+			"variants": {
+				"webp": [
+					24,
+					48,
+					72,
+					90,
+					135,
+					240,
+					330,
+					426
+				],
+				"fallback": "gif",
+				"fallbackWidths": [
+					426
+				]
+			},
+			"width": 426,
+			"height": 426
+		},
+		{
+			"key": "flagRs",
+			"kind": "raster",
+			"path": "/images/responsive/flag-rs",
+			"variants": {
+				"webp": [
+					24,
+					48,
+					72
+				],
+				"fallback": "png",
+				"fallbackWidths": [
+					24,
+					48,
+					72
+				]
+			},
+			"width": 72,
+			"height": 48
+		},
+		{
+			"key": "flagGb",
+			"kind": "raster",
+			"path": "/images/responsive/flag-gb",
+			"variants": {
+				"webp": [
+					24,
+					48,
+					72
+				],
+				"fallback": "png",
+				"fallbackWidths": [
+					24,
+					48,
+					72
+				]
+			},
+			"width": 72,
+			"height": 43
+		},
+		{
+			"key": "flagFr",
+			"kind": "raster",
+			"path": "/images/responsive/flag-fr",
+			"variants": {
+				"webp": [
+					24,
+					48,
+					72
+				],
+				"fallback": "png",
+				"fallbackWidths": [
+					24,
+					48,
+					72
+				]
+			},
+			"width": 72,
+			"height": 48
+		}
+	],
+	"languages": [
+		{
+			"iso2": "sr",
+			"iso3": "srp",
+			"name": "Srpski",
+			"flag": "flagRs"
+		},
+		{
+			"iso2": "en",
+			"iso3": "eng",
+			"name": "English",
+			"flag": "flagGb"
+		},
+		{
+			"iso2": "fr",
+			"iso3": "fra",
+			"name": "Français",
+			"flag": "flagFr"
+		}
+	],
+	"main": "en",
+	"values": {
+		"section:hero": {
+			"before_title": {
+				"en": "Senior Full Stack Web Engineer",
+				"sr": "Senior full-stack web inženjer",
+				"fr": "Ingénieur web full-stack senior"
+			},
+			"title": {
+				"en": "Building <em>digital</em> systems",
+				"sr": "Gradimo <em>digitalne</em> sisteme",
+				"fr": "Construire des systèmes <em>numériques</em>"
+			},
+			"description": {
+				"en": "Milorad Đuković is a senior full-stack engineer with 15+ years of experience building high-performance web applications, APIs, products and creative technology.",
+				"sr": "Milorad Đuković je senior full-stack inženjer sa više od 15 godina iskustva u razvoju brzih web aplikacija, API-ja, digitalnih proizvoda i kreativnih tehnoloških rešenja.",
+				"fr": "Milorad Đuković est un ingénieur full-stack senior fort de plus de 15 ans d’expérience dans la conception d’applications web performantes, d’API, de produits numériques et de technologies créatives."
+			},
+			"info": {
+				"en": "Based in Gornji Milanovac, Serbia · Available for ambitious builds",
+				"sr": "Iz Gornjeg Milanovca, Srbija · Otvoren za ambiciozne projekte",
+				"fr": "Basé à Gornji Milanovac, Serbie · Disponible pour des projets ambitieux"
+			}
+		},
+		"section:about": {
+			"before_title": {
+				"en": "Profile",
+				"sr": "Profil",
+				"fr": "Profil"
+			},
+			"title": {
+				"en": "Engineering with taste.",
+				"sr": "Inženjering sa stilom.",
+				"fr": "L’ingénierie avec du style."
+			},
+			"description": {
+				"en": "Hands-on development from product thinking and frontend detail to backend architecture and infrastructure.",
+				"sr": "Razvoj od produktnog razmišljanja i detalja frontenda do backend arhitekture i infrastrukture.",
+				"fr": "Du produit et des détails frontend à l’architecture backend et à l’infrastructure."
+			},
+			"nav_label": {
+				"en": "About",
+				"sr": "O meni",
+				"fr": "À propos"
+			},
+			"quote": {
+				"en": "Complex problems become simple when architecture, details and the user are treated as one system.",
+				"sr": "Složeni problemi postaju jednostavni kada se arhitektura, detalji i korisnik posmatraju kao jedan sistem.",
+				"fr": "Les problèmes complexes deviennent simples lorsque l’architecture, les détails et l’utilisateur sont traités comme un seul système."
+			},
+			"company_description": {
+				"en": "I design and build web applications that are fast, maintainable and ready to evolve. My work spans full-stack JavaScript, Rust, PHP, WordPress, Shopify, PWAs, WebSockets, APIs, databases and modern AI engineering.",
+				"sr": "Dizajniram i gradim web aplikacije koje su brze, održive i spremne za razvoj. Radim sa full-stack JavaScriptom, Rustom, PHP-om, WordPressom, Shopifyjem, PWA aplikacijama, WebSocketima, API-jima, bazama i modernim AI inženjeringom.",
+				"fr": "Je conçois et développe des applications web rapides, maintenables et prêtes à évoluer. Mon travail couvre JavaScript full-stack, Rust, PHP, WordPress, Shopify, les PWA, les WebSockets, les API, les bases de données et l’ingénierie IA moderne."
+			}
+		},
+		"section:stack": {
+			"before_title": {
+				"en": "Capabilities",
+				"sr": "Sposobnosti",
+				"fr": "Compétences"
+			},
+			"title": {
+				"en": "The stack behind the work.",
+				"sr": "Tehnologije iza rada.",
+				"fr": "La stack derrière le travail."
+			},
+			"description": {
+				"en": "From prototype to production: the tools change, the engineering principles stay sharp.",
+				"sr": "Od prototipa do produkcije: alati se menjaju, inženjerski principi ostaju precizni.",
+				"fr": "Du prototype à la production : les outils changent, les principes d’ingénierie restent solides."
+			},
+			"nav_label": {
+				"en": "Stack",
+				"sr": "Tehnologije",
+				"fr": "Stack"
+			}
+		},
+		"section:experience": {
+			"before_title": {
+				"en": "Experience",
+				"sr": "Iskustvo",
+				"fr": "Expérience"
+			},
+			"title": {
+				"en": "A decade-plus of shipping.",
+				"sr": "Više od decenije isporuke.",
+				"fr": "Plus d’une décennie de livraison."
+			},
+			"description": {
+				"en": "Selected roles and work delivered across product, platform and agency environments.",
+				"sr": "Odabrane pozicije i rad u produktnim, platformskim i agencijskim okruženjima.",
+				"fr": "Une sélection de rôles et de travaux dans des environnements produit, plateforme et agence."
+			},
+			"nav_label": {
+				"en": "Experience",
+				"sr": "Iskustvo",
+				"fr": "Expérience"
+			}
+		},
+		"section:projects": {
+			"before_title": {
+				"en": "Selected work",
+				"sr": "Odabrani radovi",
+				"fr": "Travaux sélectionnés"
+			},
+			"title": {
+				"en": "Things worth building.",
+				"sr": "Stvari koje vredi graditi.",
+				"fr": "Des choses qui méritent d’être construites."
+			},
+			"description": {
+				"en": "Products, experiments and platforms from the portfolio.",
+				"sr": "Proizvodi, eksperimenti i platforme iz portfolija.",
+				"fr": "Produits, expérimentations et plateformes du portfolio."
+			},
+			"nav_label": {
+				"en": "Projects",
+				"sr": "Projekti",
+				"fr": "Projets"
+			}
+		},
+		"section:cv": {
+			"before_title": {
+				"en": "Expanded CV",
+				"sr": "Prošireni CV",
+				"fr": "CV détaillé"
+			},
+			"title": {
+				"en": "More than a stack.",
+				"sr": "Više od tehnologija.",
+				"fr": "Plus qu’une stack."
+			},
+			"description": {
+				"en": "Selected capabilities, education and projects from the extended CV.",
+				"sr": "Odabrane veštine, obrazovanje i projekti iz proširenog CV-ja.",
+				"fr": "Compétences, formation et projets sélectionnés issus du CV détaillé."
+			},
+			"nav_label": {
+				"en": "Expanded CV",
+				"sr": "Prošireni CV",
+				"fr": "CV détaillé"
+			}
+		},
+		"section:contact": {
+			"before_title": {
+				"en": "Contact",
+				"sr": "Kontakt",
+				"fr": "Contact"
+			},
+			"title": {
+				"en": "Let’s build something sharp.",
+				"sr": "Hajde da izgradimo nešto ozbiljno.",
+				"fr": "Construisons quelque chose de solide."
+			},
+			"description": {
+				"en": "For a serious project, a technical challenge, or an idea that deserves great architecture — get in touch.",
+				"sr": "Za ozbiljan projekat, tehnički izazov ili ideju koja zaslužuje dobru arhitekturu — javite se.",
+				"fr": "Pour un projet sérieux, un défi technique ou une idée qui mérite une bonne architecture, contactez-moi."
+			},
+			"nav_label": {
+				"en": "Contact",
+				"sr": "Kontakt",
+				"fr": "Contact"
+			}
+		},
+		"header": {
+			"name_dark": {
+				"en": "White Moon"
+			},
+			"name_light": {
+				"en": "Blazing Sun"
+			},
+			"logo_dark": "@moon",
+			"logo_light": "@sun",
+			"icon_dark": "@moon",
+			"icon_light": "@sun"
+		},
+		"footer": {
+			"name": "Milorad Đuković",
+			"company": "Blazing Sun",
+			"position": {
+				"en": "Senior Full Stack Web Engineer",
+				"sr": "Senior full-stack web inženjer",
+				"fr": "Ingénieur web full-stack senior"
+			},
+			"country": {
+				"en": "Serbia",
+				"sr": "Srbija",
+				"fr": "Serbie"
+			}
+		},
+		"labels": {
+			"meta_title": {
+				"en": "Milorad Đuković | Blazing Sun"
+			},
+			"meta_description": {
+				"en": "Milorad Đuković — Senior Full Stack Web Engineer with 15+ years of experience."
+			},
+			"nav_label": {
+				"en": "Main",
+				"sr": "Glavni meni",
+				"fr": "Principal"
+			},
+			"theme_toggle": {
+				"en": "Toggle between Blazing Sun and White Moon",
+				"sr": "Prebaci između Blazing Sun i White Moon",
+				"fr": "Basculer entre Blazing Sun et White Moon"
+			},
+			"back_to_top": {
+				"en": "Back to top",
+				"sr": "Nazad na vrh",
+				"fr": "Retour en haut"
+			}
+		}
+	},
+	"items": [
+		{
+			"section": "hero",
+			"group": "items",
+			"values": {
+				"label": {
+					"en": "Let’s work together ↗",
+					"sr": "Sarađujmo ↗",
+					"fr": "Travaillons ensemble ↗"
+				},
+				"href": "#contact",
+				"style": "primary"
+			}
+		},
+		{
+			"section": "hero",
+			"group": "items",
+			"values": {
+				"label": {
+					"en": "Explore projects",
+					"sr": "Pogledajte projekte",
+					"fr": "Découvrir les projets"
+				},
+				"href": "#projects",
+				"style": "ghost"
+			}
+		},
+		{
+			"section": "about",
+			"group": "items",
+			"values": {
+				"value": "15+",
+				"label": {
+					"en": "years of full-stack experience",
+					"sr": "godina full-stack iskustva",
+					"fr": "ans d’expérience full-stack"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "items",
+			"values": {
+				"value": "JS",
+				"label": {
+					"en": "TypeScript, Node.js, React and Next.js",
+					"sr": "TypeScript, Node.js, React i Next.js",
+					"fr": "TypeScript, Node.js, React et Next.js"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "items",
+			"values": {
+				"value": "API",
+				"label": {
+					"en": "Rust, PHP, SQL and scalable services",
+					"sr": "Rust, PHP, SQL i skalabilni servisi",
+					"fr": "Rust, PHP, SQL et services évolutifs"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "items",
+			"values": {
+				"value": "AI",
+				"label": {
+					"en": "AI-assisted engineering and automation",
+					"sr": "AI inženjering i automatizacija",
+					"fr": "Ingénierie IA et automatisation"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "company_items",
+			"values": {
+				"text": {
+					"en": "Blazing Sun"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "company_items",
+			"values": {
+				"text": {
+					"en": "MB: 67500156"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "company_items",
+			"values": {
+				"text": {
+					"en": "PIB: 114340949"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "company_items",
+			"values": {
+				"text": {
+					"en": "Milorad Đuković"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "company_items",
+			"values": {
+				"text": {
+					"en": "NH Svete Popovica 24"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "company_items",
+			"values": {
+				"text": {
+					"en": "32300 Gornji Milanovac, Serbia"
+				}
+			}
+		},
+		{
+			"section": "about",
+			"group": "company_items",
+			"values": {
+				"text": {
+					"en": "+381 62 961 6231"
+				}
+			}
+		},
+		{
+			"section": "stack",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Frontend systems",
+					"sr": "Frontend sistemi",
+					"fr": "Systèmes frontend"
+				},
+				"text": {
+					"en": "<b>React</b>, Next.js, Redux, Web Components, PWA, Web Workers, WebAssembly, Vite, Webpack and responsive HTML.",
+					"sr": "<b>React</b>, Next.js, Redux, Web Components, PWA, Web Workers, WebAssembly, Vite, Webpack i responsive HTML.",
+					"fr": "<b>React</b>, Next.js, Redux, Web Components, PWA, Web Workers, WebAssembly, Vite, Webpack et HTML responsive."
+				}
+			}
+		},
+		{
+			"section": "stack",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Backend & APIs",
+					"sr": "Backend i API-ji",
+					"fr": "Backend et API"
+				},
+				"text": {
+					"en": "<b>Node.js</b>, TypeScript, Rust Actix-Web, PHP, Laravel, REST, GraphQL, WebSockets, queues and payments.",
+					"sr": "<b>Node.js</b>, TypeScript, Rust Actix-Web, PHP, Laravel, REST, GraphQL, WebSockets, queue sistemi i plaćanja.",
+					"fr": "<b>Node.js</b>, TypeScript, Rust Actix-Web, PHP, Laravel, REST, GraphQL, WebSockets, files d’attente et paiements."
+				}
+			}
+		},
+		{
+			"section": "stack",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Data & infrastructure",
+					"sr": "Podaci i infrastruktura",
+					"fr": "Données et infrastructure"
+				},
+				"text": {
+					"en": "<b>SQL</b>, MySQL, PostgreSQL, MongoDB, Redis, Prisma, Docker, Linux, NGINX and deployment workflows.",
+					"sr": "<b>SQL</b>, MySQL, PostgreSQL, MongoDB, Redis, Prisma, Docker, Linux, NGINX i deployment procesi.",
+					"fr": "<b>SQL</b>, MySQL, PostgreSQL, MongoDB, Redis, Prisma, Docker, Linux, NGINX et workflows de déploiement."
+				}
+			}
+		},
+		{
+			"section": "stack",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Commerce & CMS",
+					"sr": "Commerce i CMS",
+					"fr": "Commerce et CMS"
+				},
+				"text": {
+					"en": "<b>WordPress</b>, WooCommerce, Shopify apps, Liquid, Remix, PrestaShop and headless architectures.",
+					"sr": "<b>WordPress</b>, WooCommerce, Shopify aplikacije, Liquid, Remix, PrestaShop i headless arhitekture.",
+					"fr": "<b>WordPress</b>, WooCommerce, applications Shopify, Liquid, Remix, PrestaShop et architectures headless."
+				}
+			}
+		},
+		{
+			"section": "stack",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "AI engineering",
+					"sr": "AI inženjering",
+					"fr": "Ingénierie IA"
+				},
+				"text": {
+					"en": "<b>OpenAI</b>, Ollama, Claude Code, Codex, assistants, automation and AI-powered product features.",
+					"sr": "<b>OpenAI</b>, Ollama, Claude Code, Codex, asistenti, automatizacija i AI funkcije u proizvodima.",
+					"fr": "<b>OpenAI</b>, Ollama, Claude Code, Codex, assistants, automatisation et fonctionnalités IA."
+				}
+			}
+		},
+		{
+			"section": "stack",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Quality & delivery",
+					"sr": "Kvalitet i isporuka",
+					"fr": "Qualité et livraison"
+				},
+				"text": {
+					"en": "<b>Jest</b>, Postman, Core Web Vitals, SEO foundations, code review and production delivery.",
+					"sr": "<b>Jest</b>, Postman, Core Web Vitals, SEO osnove, code review i produkciona isporuka.",
+					"fr": "<b>Jest</b>, Postman, Core Web Vitals, bases SEO, revue de code et livraison en production."
+				}
+			}
+		},
+		{
+			"section": "experience",
+			"group": "items",
+			"values": {
+				"period": {
+					"en": "2025 — Present",
+					"sr": "2025 — danas",
+					"fr": "2025 — aujourd’hui"
+				},
+				"title": {
+					"en": "Senior Full Stack Developer",
+					"sr": "Senior Full Stack Developer",
+					"fr": "Développeur Full Stack Senior"
+				},
+				"company": "Gambing.com · BonusFinder.com",
+				"text": {
+					"en": "Full-stack WordPress engineering, custom themes and plugins, caching, Core Web Vitals and high-performance web applications.",
+					"sr": "Full-stack WordPress razvoj, custom teme i pluginovi, keširanje, Core Web Vitals i web aplikacije visokih performansi.",
+					"fr": "Développement WordPress full-stack, thèmes et plugins personnalisés, cache, Core Web Vitals et applications web performantes."
+				}
+			}
+		},
+		{
+			"section": "experience",
+			"group": "items",
+			"values": {
+				"period": {
+					"en": "2015 — Present",
+					"sr": "2015 — danas",
+					"fr": "2015 — aujourd’hui"
+				},
+				"title": {
+					"en": "Full Stack Software Engineer",
+					"sr": "Full Stack Software Engineer",
+					"fr": "Ingénieur logiciel Full Stack"
+				},
+				"company": "Blazing Sun",
+				"text": {
+					"en": "Independent development across JavaScript, Rust, PHP and Node.js, with APIs, PWAs, WebAssembly, architecture and experiments.",
+					"sr": "Samostalan razvoj u JavaScriptu, Rustu, PHP-u i Node.js-u, sa API-jima, PWA aplikacijama, WebAssemblyjem i eksperimentima.",
+					"fr": "Développement indépendant en JavaScript, Rust, PHP et Node.js, avec API, PWA, WebAssembly, architecture et expérimentations."
+				}
+			}
+		},
+		{
+			"section": "experience",
+			"group": "items",
+			"values": {
+				"period": {
+					"en": "2024 — 2025",
+					"sr": "2024 — 2025",
+					"fr": "2024 — 2025"
+				},
+				"title": {
+					"en": "Full Stack Web Developer",
+					"sr": "Full Stack Web Developer",
+					"fr": "Développeur Web Full Stack"
+				},
+				"company": "Del Systems",
+				"text": {
+					"en": "WordPress plugins, Shopify applications, React and Angular libraries, integrations, testing and scalable delivery.",
+					"sr": "WordPress pluginovi, Shopify aplikacije, React i Angular biblioteke, integracije, testiranje i skalabilna isporuka.",
+					"fr": "Plugins WordPress, applications Shopify, bibliothèques React et Angular, intégrations, tests et livraison évolutive."
+				}
+			}
+		},
+		{
+			"section": "experience",
+			"group": "items",
+			"values": {
+				"period": {
+					"en": "2020 — 2023",
+					"sr": "2020 — 2023",
+					"fr": "2020 — 2023"
+				},
+				"title": {
+					"en": "Full Stack Web Developer",
+					"sr": "Full Stack Web Developer",
+					"fr": "Développeur Web Full Stack"
+				},
+				"company": "The Symbol d.o.o",
+				"text": {
+					"en": "Remote-learning platforms, Laravel, Twilio, JavaScript, PHP and Flutter applications.",
+					"sr": "Platforme za učenje na daljinu, Laravel, Twilio, JavaScript, PHP i Flutter aplikacije.",
+					"fr": "Plateformes d’apprentissage à distance, Laravel, Twilio, JavaScript, PHP et applications Flutter."
+				}
+			}
+		},
+		{
+			"section": "experience",
+			"group": "items",
+			"values": {
+				"period": {
+					"en": "2012 — 2019",
+					"sr": "2012 — 2019",
+					"fr": "2012 — 2019"
+				},
+				"title": {
+					"en": "Web Developer · IT Technician",
+					"sr": "Web Developer · IT Technician",
+					"fr": "Développeur Web · Technicien IT"
+				},
+				"company": "Cloud Idustry · MA Team · Dumil08 Reballing",
+				"text": {
+					"en": "WordPress, custom themes and plugins, business websites, IT infrastructure, diagnostics and technical support.",
+					"sr": "WordPress, custom teme i pluginovi, poslovni sajtovi, IT infrastruktura, dijagnostika i tehnička podrška.",
+					"fr": "WordPress, thèmes et plugins personnalisés, sites professionnels, infrastructure IT, diagnostic et support technique."
+				}
+			}
+		},
+		{
+			"section": "projects",
+			"group": "items",
+			"values": {
+				"category": {
+					"en": "Product platform"
+				},
+				"name": {
+					"en": "BonusFinder",
+					"sr": "BonusFinder",
+					"fr": "BonusFinder"
+				},
+				"text": {
+					"en": "Full-stack engineering and WordPress platform work with performance, caching and a headless frontend direction.",
+					"sr": "Full-stack razvoj i WordPress platforma sa fokusom na performanse, keširanje i headless frontend.",
+					"fr": "Développement full-stack et plateforme WordPress avec performance, cache et orientation frontend headless."
+				},
+				"tech": "WordPress · PHP · SQL · JavaScript · React · Next.js"
+			}
+		},
+		{
+			"section": "projects",
+			"group": "items",
+			"values": {
+				"category": {
+					"en": "Internal automation"
+				},
+				"name": {
+					"en": "TicketBuddy",
+					"sr": "TicketBuddy",
+					"fr": "TicketBuddy"
+				},
+				"text": {
+					"en": "A Slack application that creates Jira tickets from a guided workflow with AI-assisted context.",
+					"sr": "Slack aplikacija koja kreira Jira tikete kroz vođeni proces uz AI pomoć.",
+					"fr": "Une application Slack qui crée des tickets Jira via un workflow guidé avec contexte assisté par IA."
+				},
+				"tech": "Node.js · TypeScript · Drizzle · Slack · Jira · OpenAI"
+			}
+		},
+		{
+			"section": "projects",
+			"group": "items",
+			"values": {
+				"category": {
+					"en": "Real-time product"
+				},
+				"name": {
+					"en": "Empower Nation",
+					"sr": "Empower Nation",
+					"fr": "Empower Nation"
+				},
+				"text": {
+					"en": "A medical video-chat application with live communication, transcripts and AI-assisted processing.",
+					"sr": "Medicinska video-chat aplikacija sa komunikacijom uživo, transkriptima i AI obradom.",
+					"fr": "Une application médicale de vidéo-chat avec communication en direct, transcriptions et traitement IA."
+				},
+				"tech": "Node.js · TypeScript · Prisma · React · Daily.co · Deepgram"
+			}
+		},
+		{
+			"section": "projects",
+			"group": "items",
+			"values": {
+				"category": {
+					"en": "Blazing Sun lab"
+				},
+				"name": {
+					"en": "Experiments that teach",
+					"sr": "Eksperimenti koji uče",
+					"fr": "Expériences qui enseignent"
+				},
+				"text": {
+					"en": "Rust APIs, Node.js chat, multiplayer games, MERN foundations, file uploads and browser applications.",
+					"sr": "Rust API-ji, Node.js chat, multiplayer igre, MERN osnove, upload fajlova i browser aplikacije.",
+					"fr": "API Rust, chat Node.js, jeux multijoueurs, bases MERN, upload de fichiers et applications navigateur."
+				},
+				"tech": "Rust · Node.js · Express · React · MongoDB · WebSockets"
+			}
+		},
+		{
+			"section": "cv",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "AI Engineering",
+					"sr": "AI inženjering",
+					"fr": "Ingénierie IA"
+				},
+				"text": {
+					"en": "Claude Code, Codex, OpenAI and Ollama APIs, agentic coding workflows, AI automations, agents, subagents, commands, hooks and deployment-assisted development.",
+					"sr": "Claude Code, Codex, OpenAI i Ollama API-ji, agentski tokovi razvoja, AI automatizacije, agenti, subagenti, komande, hookovi i razvoj uz automatizovan deployment.",
+					"fr": "Claude Code, Codex, API OpenAI et Ollama, workflows de développement agentiques, automatisations IA, agents, sous-agents, commandes, hooks et développement avec déploiement automatisé."
+				}
+			}
+		},
+		{
+			"section": "cv",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Systems & Architecture",
+					"sr": "Sistemi i arhitektura",
+					"fr": "Systèmes et architecture"
+				},
+				"text": {
+					"en": "Rust Actix-Web APIs, WebAssembly, Node.js services, queues, workers, jobs, Pub/Sub, WebSockets, WebRTC, Canvas API, WebAuthn and PWA architecture.",
+					"sr": "Rust Actix-Web API-ji, WebAssembly, Node.js servisi, redovi poruka, workeri, poslovi, Pub/Sub, WebSockets, WebRTC, Canvas API, WebAuthn i PWA arhitektura.",
+					"fr": "API Rust Actix-Web, WebAssembly, services Node.js, files d’attente, workers, jobs, Pub/Sub, WebSockets, WebRTC, Canvas API, WebAuthn et architecture PWA."
+				}
+			}
+		},
+		{
+			"section": "cv",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Commerce & Platforms",
+					"sr": "Commerce i platforme",
+					"fr": "Commerce et plateformes"
+				},
+				"text": {
+					"en": "WordPress themes and plugins, WooCommerce, Shopify Apps, Remix, Liquid, PrestaShop, payment integrations, headless WordPress and reusable React libraries.",
+					"sr": "WordPress teme i pluginovi, WooCommerce, Shopify aplikacije, Remix, Liquid, PrestaShop, integracije plaćanja, headless WordPress i višekratne React biblioteke.",
+					"fr": "Thèmes et plugins WordPress, WooCommerce, applications Shopify, Remix, Liquid, PrestaShop, intégrations de paiement, WordPress headless et bibliothèques React réutilisables."
+				}
+			}
+		},
+		{
+			"section": "cv",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Education",
+					"sr": "Obrazovanje",
+					"fr": "Formation"
+				},
+				"text": {
+					"en": "Computer Software Engineering at Technical College Kragujevac, plus Electrical and Electronics Engineering at High Electro Technical School Jovan Žujović.",
+					"sr": "Softversko inženjerstvo na Visokoj tehničkoj školi u Kragujevcu, kao i elektrotehnika i elektronika u Elektrotehničkoj školi „Jovan Žujović”.",
+					"fr": "Génie logiciel à la Haute école technique de Kragujevac, ainsi que génie électrique et électronique à l’École électrotechnique « Jovan Žujović »."
+				}
+			}
+		},
+		{
+			"section": "cv",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Selected Projects",
+					"sr": "Odabrani projekti",
+					"fr": "Projets sélectionnés"
+				},
+				"text": {
+					"en": "Empower Nation medical video chat, Ocamba integrations, Hood Engage Shopify and WordPress products, Live from Montreux, Performance Golf and multiple Blazing Sun Rust, Node.js and MERN experiments.",
+					"sr": "Empower Nation medicinski video-chat, Ocamba integracije, Hood Engage Shopify i WordPress proizvodi, Live from Montreux, Performance Golf i brojni Blazing Sun eksperimenti u Rustu, Node.js-u i MERN-u.",
+					"fr": "Vidéo-chat médical Empower Nation, intégrations Ocamba, produits Shopify et WordPress Hood Engage, Live from Montreux, Performance Golf et de nombreuses expérimentations Blazing Sun en Rust, Node.js et MERN."
+				}
+			}
+		},
+		{
+			"section": "cv",
+			"group": "items",
+			"values": {
+				"title": {
+					"en": "Engineering Mindset",
+					"sr": "Inženjerski pristup",
+					"fr": "État d’esprit d’ingénieur"
+				},
+				"text": {
+					"en": "Complex problem solving, documentation, testing, performance optimization, accessibility, SEO structure, collaboration, mentoring and continuous technical research.",
+					"sr": "Rešavanje složenih problema, dokumentacija, testiranje, optimizacija performansi, pristupačnost, SEO struktura, saradnja, mentorstvo i stalno tehničko istraživanje.",
+					"fr": "Résolution de problèmes complexes, documentation, tests, optimisation des performances, accessibilité, structure SEO, collaboration, mentorat et veille technique continue."
+				}
+			}
+		},
+		{
+			"section": "contact",
+			"group": "items",
+			"values": {
+				"type": "phone",
+				"value": "+381 62 961 6231",
+				"icon": "☎"
+			}
+		},
+		{
+			"section": "contact",
+			"group": "items",
+			"values": {
+				"type": "email",
+				"value": "djmyle@gmail.com",
+				"icon": "✉"
+			}
+		},
+		{
+			"section": "contact",
+			"group": "items",
+			"values": {
+				"type": "link",
+				"value": "https://www.linkedin.com/in/donmilorad",
+				"label": {
+					"en": "LinkedIn"
+				},
+				"icon": "in"
+			}
+		},
+		{
+			"section": "contact",
+			"group": "items",
+			"values": {
+				"type": "link",
+				"value": "https://github.com/donmilorad87",
+				"label": {
+					"en": "GitHub"
+				},
+				"icon": "⌘"
+			}
+		}
+	]
+}

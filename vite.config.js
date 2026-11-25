@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
@@ -22,16 +22,52 @@ function stampServiceWorkerVersion() {
 	};
 }
 
+/**
+ * While `npm run dev` runs, tells the PHP page renderer to load assets from this dev server (hot reload):
+ * it writes the server URL to server/storage/hot and removes the file when the server stops.
+ */
+function phpHotFile() {
+	const file = resolve( 'server/storage/hot' );
+	return {
+		name: 'php-hot-file',
+		apply: 'serve',
+		configureServer( server ) {
+			server.httpServer?.once( 'listening', () => {
+				mkdirSync( resolve( 'server/storage' ), { recursive: true } );
+				writeFileSync( file, `http://localhost:${ server.config.server.port }` );
+			} );
+			const remove = () => rmSync( file, { force: true } );
+			server.httpServer?.once( 'close', remove );
+			process.once( 'SIGINT', () => {
+				remove();
+				process.exit( 0 );
+			} );
+		},
+	};
+}
+
+// The page HTML comes from PHP (server/templates/page.php); in dev, Vite forwards it and the API to Docker nginx.
+const backend = `http://127.0.0.1:${ process.env.BLAZINGSUN_HTTP_PORT || 80 }`;
+
 export default defineConfig( {
 	build: {
 		outDir: 'dist',
 		emptyOutDir: true,
 		// The sun GIF must keep its URL (it is swapped at runtime), so never inline images.
 		assetsInlineLimit: 0,
+		// The PHP page renderer reads the hashed CSS/JS file names from here.
+		manifest: 'asset-manifest.json',
+		rollupOptions: {
+			input: { main: 'src/main.js', admin: 'adminportal/index.html' },
+		},
 	},
-	plugins: [ stampServiceWorkerVersion() ],
+	plugins: [ stampServiceWorkerVersion(), phpHotFile() ],
 	server: {
-		// `npm run docker:up` serves the PHP API through nginx; the dev server forwards /api to it.
-		proxy: { '/api': `http://127.0.0.1:${ process.env.BLAZINGSUN_HTTP_PORT || 80 }` },
+		// `npm run docker:up` serves the PHP API and the rendered page through nginx.
+		proxy: {
+			'/api': backend,
+			'/uploads': backend,
+			'^/([a-z]{2}/?)?$': backend,
+		},
 	},
 } );

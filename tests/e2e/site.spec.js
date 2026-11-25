@@ -68,19 +68,19 @@ test( 'theme toggle switches to Blazing Sun and remembers it', async ( { page } 
 	await expect( toggle ).toHaveAttribute( 'aria-pressed', 'true' );
 } );
 
-test( 'language picker translates the page and remembers the choice', async ( { page } ) => {
+test( 'language picker links to each language’s own page', async ( { page } ) => {
 	const current = page.locator( '.lang-picker__current' );
 	await current.click();
 	await expect( current ).toHaveAttribute( 'aria-expanded', 'true' );
-	await page.getByRole( 'button', { name: 'Srpski' } ).click();
+	await expect( page.getByRole( 'link', { name: 'English' } ) ).toHaveAttribute( 'aria-current', 'page' );
+	await page.getByRole( 'link', { name: 'Srpski' } ).click();
 
+	await expect( page ).toHaveURL( /\/sr\/$/ );
 	await expect( page.locator( 'html' ) ).toHaveAttribute( 'lang', 'sr' );
 	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Gradimo digitalne sisteme' );
-	await expect( page.locator( '#lang-menu' ) ).toBeHidden();
-
-	await page.reload();
-	await expect( page.locator( 'html' ) ).toHaveAttribute( 'lang', 'sr' );
 	await expect( page.locator( '#contact h2' ) ).toHaveText( 'Hajde da izgradimo nešto ozbiljno.' );
+	await expect( current ).toHaveAttribute( 'aria-label', 'Srpski' );
+	await expect( page.locator( '.site-nav__links a' ).first() ).toHaveText( 'O meni' );
 } );
 
 test( 'language menu closes with Escape and on outside click', async ( { page } ) => {
